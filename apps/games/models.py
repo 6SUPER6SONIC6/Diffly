@@ -6,7 +6,6 @@ from django.db import models
 
 class Platform(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.name
@@ -14,18 +13,17 @@ class Platform(models.Model):
 
 class Game(models.Model):
     title = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     short_description = models.TextField(blank=True)
-    developer_name = models.CharField(max_length=100)
-    publisher_name = models.CharField(max_length=100)
+    developer_name = models.CharField(max_length=100, blank=True)
+    publisher_name = models.CharField(max_length=100, blank=True)
     release_date = models.DateField(null=True, blank=True)
     platforms = models.ManyToManyField(
         Platform,
         through='GamePlatform',
         related_name='games',
     )
-    xbox_product_id = models.CharField(max_length=12, unique=True)
+    xbox_product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -78,7 +76,6 @@ class GamePlatform(models.Model):
 
 class Store(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
     base_url = models.URLField()
     platforms = models.ManyToManyField(Platform, related_name='stores')
 
