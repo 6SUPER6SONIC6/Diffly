@@ -23,7 +23,7 @@ class Game(models.Model):
         through='GamePlatform',
         related_name='games',
     )
-    xbox_product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
+    product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

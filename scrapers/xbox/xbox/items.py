@@ -13,10 +13,12 @@ class XboxItem(scrapy.Item):
     game_developer_name = scrapy.Field()
     game_publisher_name = scrapy.Field()
     game_release_date = scrapy.Field()
-    xbox_product_id = scrapy.Field()
+    product_id = scrapy.Field()
 
     images = scrapy.Field()
 
     price_base = scrapy.Field()
     price_current = scrapy.Field()
+
+    region = scrapy.Field()
 
