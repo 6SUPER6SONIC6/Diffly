@@ -12,11 +12,11 @@ class Platform(models.Model):
 
 
 class Game(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField()
     description = models.TextField(blank=True)
-    short_description = models.TextField(blank=True)
-    developer_name = models.CharField(max_length=100, blank=True)
-    publisher_name = models.CharField(max_length=100, blank=True)
+    short_description = models.TextField(blank=True, null=True)
+    developer_name = models.CharField(max_length=100, blank=True, null=True)
+    publisher_name = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.DateField(null=True, blank=True)
     platforms = models.ManyToManyField(
         Platform,
@@ -92,7 +92,8 @@ class Price(models.Model):
     current_price = models.DecimalField(decimal_places=2, max_digits=10)
     discount_percentage = models.DecimalField(
         decimal_places=2,
-        max_digits=5, default=Decimal('0.00'),
+        max_digits=5,
+        default=0,
         validators=[
             MinValueValidator(Decimal('0')),
             MaxValueValidator(Decimal('100'))
@@ -119,11 +120,8 @@ class Price(models.Model):
     def save(self, *args, **kwargs):
         if self.current_price < self.base_price:
             self.is_on_sale = True
-            self.discount_percentage = (
-                    (self.base_price - self.current_price) / self.base_price * 100
-            ).quantize(Decimal('0.01'))
-        else:
-            self.is_on_sale = False
-            self.discount_percentage = Decimal('0.00')
+            self.discount_percentage = round(
+                (self.base_price - self.current_price) / self.base_price * 100
+            )
 
         super().save(*args, **kwargs)

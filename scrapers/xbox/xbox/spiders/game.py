@@ -23,7 +23,7 @@ class GameSpider(scrapy.Spider):
     async def start(self):
         for region in self.regions:
             yield scrapy.Request(
-                url=f"https://www.xbox.com/{region}/games/browse",
+                url=f"https://www.xbox.com/{region}/games/browse?orderby=Title+Asc&PlayWith=XboxSeriesX%7CS%2CXboxOne",
                 callback=self.parse,
                 meta={"region": region},
             )
@@ -66,9 +66,9 @@ class GameSpider(scrapy.Spider):
         self.cv_counter += 1
 
         body = {
-            'Filters': 'e30=',
+            'Filters': 'eyJvcmRlcmJ5Ijp7ImlkIjoib3JkZXJieSIsImNob2ljZXMiOlt7ImlkIjoiVGl0bGUgQXNjIn1dfSwiUGxheVdpdGgiOnsiaWQiOiJQbGF5V2l0aCIsImNob2ljZXMiOlt7ImlkIjoiWGJveFNlcmllc1h8UyJ9LHsiaWQiOiJYYm94T25lIn1dfX0=',
             'ReturnFilters': False,
-            'ChannelKeyToBeUsedInResponse': 'BROWSE_CHANNELID=_FILTERS=',
+            'ChannelKeyToBeUsedInResponse': 'BROWSE_CHANNELID=_FILTERS=ORDERBY=TITLE ASC&PLAYWITH=XBOXONE,XBOXSERIESX|S',
             'EncodedCT': continuation_token,
             'ChannelId': ''
         }
@@ -102,7 +102,7 @@ class GameSpider(scrapy.Spider):
         if next_continuation_token and self.cv_counter <= self.max_pages * len(self.regions):
             yield self.create_api_request(next_continuation_token, region)
         else:
-            raise scrapy.exceptions.CloseSpider(reason=f"Closing API request for page {self.cv_counter}")
+            raise scrapy.exceptions.CloseSpider(reason=f"Closing API request for CV: {self.cv_counter}")
 
     def parse_item(self, game_data):
         item = XboxItem()
@@ -122,5 +122,5 @@ class GameSpider(scrapy.Spider):
             item['price_base'] = price_data.get('msrp')
             item['price_current'] = price_data.get('listPrice')
 
-        self.logger.info(f"Parsed item: {item.get('game_title')} - {item.get('price_base')} - {item.get('region')}")
+        # self.logger.info(f"Parsed item: {item.get('game_title')} - {item.get('price_base')} - {item.get('region')}")
         return item

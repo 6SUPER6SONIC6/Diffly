@@ -1,10 +1,22 @@
 # Scrapy settings for xbox project
+import os
+import sys
+
+import django
+
+sys.path.append(os.path.abspath('../../'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'Diffly.settings'
+django.setup()
 
 
 BOT_NAME = "xbox"
 
 SPIDER_MODULES = ["xbox.spiders"]
 NEWSPIDER_MODULE = "xbox.spiders"
+
+ITEM_PIPELINES = {
+    "xbox.pipelines.DjangoModelPipeline": 300,
+}
 
 ADDONS = {}
 
