@@ -9,13 +9,14 @@ from ..items import XboxItem
 class GameSpider(scrapy.Spider):
     name = "game"
     allowed_domains = ["www.xbox.com", "xboxservices.com"]
-    # start_urls = ["https://www.xbox.com/en-US/games/browse"]
     regions = ["en-US", "tr-TR"]
 
     def __init__(self, max_pages=3, *args, **kwargs):
         super(GameSpider, self).__init__(*args, **kwargs)
 
         self.max_pages = int(max_pages)
+        self.pages_scraped = {region: 0 for region in self.regions}
+
         self.base_api_url = "https://emerald.xboxservices.com/xboxcomfd/browse?locale="
         self.cv_base = "DSK6KO20k6Y7NXCBkdtipF"
         self.cv_counter = 1
@@ -34,8 +35,11 @@ class GameSpider(scrapy.Spider):
         region = response.meta.get('region')
 
         if not match:
-            self.logger.warning("Could not find preloaded state")
+            self.logger.warning(f"Could not find preloaded state for region {region}")
             return
+
+        self.pages_scraped[region] += 1
+        self.logger.info(f"Processing page {self.pages_scraped[region]}/{self.max_pages} for region {region}")
 
         try:
             preloaded_data = json.loads(match.group(1))
@@ -57,11 +61,10 @@ class GameSpider(scrapy.Spider):
                 yield self.parse_item(game_data)
 
         continuation_token = channel_data.get(channel_key, {}).get('data', {}).get('encodedCT')
-        if continuation_token and self.max_pages > 0:
+        if continuation_token and self.pages_scraped[region] < self.max_pages:
             yield self.create_api_request(continuation_token, region)
 
     def create_api_request(self, continuation_token, region):
-        self.logger.info(f"Creating API request for page {self.cv_counter}")
         ms_cv = f"{self.cv_base}.{self.cv_counter}"
         self.cv_counter += 1
 
@@ -84,6 +87,10 @@ class GameSpider(scrapy.Spider):
 
     def parse_api_response(self, response):
         region = response.meta.get('region')
+
+        self.pages_scraped[region] += 1
+        self.logger.info(f"Processing page {self.pages_scraped[region]}/{self.max_pages} for region {region}")
+
         try:
             data = json.loads(response.text)
         except json.JSONDecodeError as e:
@@ -99,10 +106,8 @@ class GameSpider(scrapy.Spider):
             yield self.parse_item(game_data)
 
         next_continuation_token = channel_data.get(channel_key, {}).get('encodedCT')
-        if next_continuation_token and self.cv_counter <= self.max_pages * len(self.regions):
+        if next_continuation_token and self.pages_scraped[region] < self.max_pages:
             yield self.create_api_request(next_continuation_token, region)
-        else:
-            raise scrapy.exceptions.CloseSpider(reason=f"Closing API request for CV: {self.cv_counter}")
 
     def parse_item(self, game_data):
         item = XboxItem()
@@ -117,10 +122,10 @@ class GameSpider(scrapy.Spider):
         item['product_id'] = game_data.get('productId')
         item['images'] = game_data.get('images')
 
-        if 'specificPrices' in game_data and game_data['specificPrices']['purchaseable']:
-            price_data = game_data['specificPrices']['purchaseable'][0]
+        prices = game_data.get('specificPrices', {}).get('purchaseable', [])
+        if prices:
+            price_data = prices[0]
             item['price_base'] = price_data.get('msrp')
             item['price_current'] = price_data.get('listPrice')
 
-        # self.logger.info(f"Parsed item: {item.get('game_title')} - {item.get('price_base')} - {item.get('region')}")
         return item
