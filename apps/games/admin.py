@@ -14,7 +14,7 @@ class GameImageInline(admin.TabularInline):
 class GameAdmin(admin.ModelAdmin):
     inlines = [PriceInline, GameImageInline]
     list_filter = ('title',)
-    search_fields = ('title',)
+    search_fields = ('title', 'product_id')
 
 admin.site.register(Game, GameAdmin)
 admin.site.register(Platform)
