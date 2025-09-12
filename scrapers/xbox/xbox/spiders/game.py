@@ -7,11 +7,19 @@ from ..items import XboxItem
 
 
 class GameSpider(scrapy.Spider):
+    """Scrapes games from Xbox Store across multiple regions, handling pagination via API."""
     name = "game"
     allowed_domains = ["www.xbox.com", "xboxservices.com"]
     regions = ["en-US", "tr-TR"]
 
     def __init__(self, max_pages=3, *args, **kwargs):
+        """
+        Initializes the GameSpider.
+
+        :param max_pages: Maximum number of pages to scrap. Defaults to 3.
+        :param args: Variable length argument list.
+        :param kwargs: Arbitrary keyword arguments.
+        """
         super(GameSpider, self).__init__(*args, **kwargs)
 
         self.max_pages = int(max_pages)
@@ -22,6 +30,9 @@ class GameSpider(scrapy.Spider):
         self.cv_counter = 1
 
     async def start(self):
+        """
+        Generate initial requests to Xbox Store browse pages for each region.
+        """
         for region in self.regions:
             yield scrapy.Request(
                 url=f"https://www.xbox.com/{region}/games/browse?orderby=Title+Asc&PlayWith=XboxSeriesX%7CS%2CXboxOne",
@@ -30,6 +41,9 @@ class GameSpider(scrapy.Spider):
             )
 
     def parse(self, response):
+        """
+        Parse the initial HTML response, extract game data, and yields items or next page requests.
+        """
         script_pattern = r'window\.__PRELOADED_STATE__ = ({.*?});'
         match = re.search(script_pattern, response.text, re.DOTALL)
         region = response.meta.get('region')
@@ -65,6 +79,13 @@ class GameSpider(scrapy.Spider):
             yield self.create_api_request(continuation_token, region)
 
     def create_api_request(self, continuation_token, region):
+        """
+        Build a POST request to Xbox Store API using the given continuation token for pagination.
+
+        :param continuation_token: Token to fetch the next page of results.
+        :param region: The region code for the request.
+        :return: scrapy.Request object.
+        """
         ms_cv = f"{self.cv_base}.{self.cv_counter}"
         self.cv_counter += 1
 
@@ -86,6 +107,11 @@ class GameSpider(scrapy.Spider):
         )
 
     def parse_api_response(self, response):
+        """
+        Parse API response, extract games and handle pagination.
+
+        :param response: The API response to parse.
+        """
         region = response.meta.get('region')
 
         self.pages_scraped[region] += 1
@@ -110,6 +136,12 @@ class GameSpider(scrapy.Spider):
             yield self.create_api_request(next_continuation_token, region)
 
     def parse_item(self, game_data):
+        """
+        Transform raw game data into an XboxItem.
+
+        :param game_data: Raw game data dictionary.
+        :return: XboxItem object.
+        """
         item = XboxItem()
 
         item['region'] = game_data.get('region')

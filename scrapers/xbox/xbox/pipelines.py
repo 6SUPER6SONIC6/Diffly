@@ -15,7 +15,11 @@ REGION_MAP = {
 
 
 class DjangoModelPipeline:
+    """Pipeline that saves scraped items into the Django database. Including games, platforms, images,
+    and prices. Track statistics for created and updated records per region."""
+
     def __init__(self):
+        """Initialize stats counters for tracking create/update operations."""
         self.stats = defaultdict(
             lambda: {
                 'games': {'crt': 0, 'upd': 0},
@@ -25,6 +29,8 @@ class DjangoModelPipeline:
         )
 
     async def process_item(self, item, spider):
+        """Process each scraped item asynchronously, persist it to the database, update related models, and record
+        statistics."""
         product_id = item.get('product_id')
         region = item.get('region')
         region_code = REGION_MAP.get(region)
@@ -126,6 +132,7 @@ class DjangoModelPipeline:
         return item
 
     def close_spider(self, spider):
+        """Log a summary of statistics and close database connection after the spider finishes."""
         for region, data in self.stats.items():
             spider.logger.info(
                 f'''
