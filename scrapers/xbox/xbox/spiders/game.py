@@ -43,17 +43,35 @@ class GameSpider(scrapy.Spider):
     def parse(self, response):
         """
         Parse the initial HTML response, extract game data, and yields items or next page requests.
+
+        @url https://www.xbox.com/en-US/games/browse?orderby=Title+Asc&PlayWith=XboxSeriesX%7CS%2CXboxOne
+        @returns items 25 25
+        @scrapes game_title game_description game_developer_name game_publisher_name game_release_date product_id images region
         """
+        try:
+            region = response.meta.get('region')
+        except AttributeError:
+            region = None
+
+        if not region:
+            region_match = re.search(r'xbox\.com/([^/]+)/games', response.url, re.DOTALL)
+            if region_match:
+                region = region_match.group(1)
+            else:
+                region = "en-US"
+
         script_pattern = r'window\.__PRELOADED_STATE__ = ({.*?});'
         match = re.search(script_pattern, response.text, re.DOTALL)
-        region = response.meta.get('region')
-
         if not match:
             self.logger.warning(f"Could not find preloaded state for region {region}")
             return
 
-        self.pages_scraped[region] += 1
-        self.logger.info(f"Processing page {self.pages_scraped[region]}/{self.max_pages} for region {region}")
+        try:
+            self.pages_scraped[region] += 1
+        except KeyError:
+            self.logger.error(f"Could not increase page count")
+        else:
+            self.logger.info(f"Processing page {self.pages_scraped[region]}/{self.max_pages} for region {region}")
 
         try:
             preloaded_data = json.loads(match.group(1))
