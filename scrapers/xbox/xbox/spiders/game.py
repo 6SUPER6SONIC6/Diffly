@@ -48,9 +48,11 @@ class GameSpider(scrapy.Spider):
         @returns items 25 25
         @scrapes game_title game_description game_developer_name game_publisher_name game_release_date product_id images region
         """
-        script_pattern = r'window\.__PRELOADED_STATE__ = ({.*?});'
-        match = re.search(script_pattern, response.text, re.DOTALL)
-        region = response.meta.get('region')
+        try:
+            region = response.meta.get('region')
+        except AttributeError:
+            region = None
+
         if not region:
             region_match = re.search(r'xbox\.com/([^/]+)/games', response.url, re.DOTALL)
             if region_match:
@@ -58,6 +60,8 @@ class GameSpider(scrapy.Spider):
             else:
                 region = "en-US"
 
+        script_pattern = r'window\.__PRELOADED_STATE__ = ({.*?});'
+        match = re.search(script_pattern, response.text, re.DOTALL)
         if not match:
             self.logger.warning(f"Could not find preloaded state for region {region}")
             return
