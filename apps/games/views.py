@@ -1,3 +1,13 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+
+def index(request):
+    return HttpResponse("Homepage")
+
+
+def games(request):
+    return HttpResponse("Games list")
+
+
+def game_detail(request, game_id):
+    return HttpResponse("Game detail")
