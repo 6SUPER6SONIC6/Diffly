@@ -48,7 +48,7 @@ class DjangoModelPipeline:
                 defaults={
                     'title': item.get('game_title'),
                     'description': item.get('game_description'),
-                    'short_description': item.get('game_description'),
+                    'short_description': item.get('game_short_description'),
                     'developer_name': item.get('game_developer_name'),
                     'publisher_name': item.get('game_publisher_name'),
                     'release_date': release_date,
