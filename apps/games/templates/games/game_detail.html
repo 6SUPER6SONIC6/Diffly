@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ game.title</title>
+</head>
+<body>
+<h1>{{ game.title }}</h1>
+<p>{{ game.description }}</p>
+<ul>
+    {% for price in game.prices.all %}
+        <li>{{ price.region.code }} -  {{ price.region.currency_symbol }}{{ price.base_price }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
