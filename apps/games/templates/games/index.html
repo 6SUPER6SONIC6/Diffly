@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diffly - Homepage</title>
+</head>
+<body>
+<form method="get" action="{% url 'search' %}">
+    <label>
+        <input type="text" name="q" placeholder="Search games...">
+    </label>
+    <button type="submit">Search</button>
+</form>
+{% if recently_added_games %}
+<ul>
+    {% for game in recently_added_games %}
+    <li><a href="{% url 'game_detail' game.id%}">{{ game.title }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No games available.</p>
+{% endif %}
+<h1><a href="{% url 'games' %}">Browse All Games</a></h1>
+</body>
+</html>

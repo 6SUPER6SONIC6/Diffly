@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ game.title }}</title>
+</head>
+<body>
+
+<h1>{{ game.title }}</h1>
+<p>{{ game.id }} / {{ game.product_id }}</p>
+<p><b>Dev: </b>{{ game.developer_name }}</p>
+<p><b>Pub: </b>{{ game.publisher_name }}</p>
+<p><b>Release: </b>{{ game.release_date }}</p>
+<p><b>Added: </b>{{ game.created_at }}</p>
+<p><b>Updated: </b>{{ game.updated_at }}</p>
+
+
+<h3>Platforms</h3>
+<ul>
+    {% for platform in game.platforms.all %}
+    <li>{{ platform }}</li>
+    {% endfor %}
+</ul>
+
+<p><b>Description: </b>{{ game.description|safe }}</p>
+
+<p><b>Short Description: </b>{{ game.short_description }}</p>
+<h2>Images</h2>
+{% for image in game.images.all %}
+<img src="{{ image.url }}" width="300">
+{% endfor %}
+
+<h2>Prices</h2>
+<ul>
+    {% for price in game.prices.all %}
+    <li><h3>{{ price.region.code }} - {{ price.region.currency_symbol }}{{ price.base_price }}</h3></li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
