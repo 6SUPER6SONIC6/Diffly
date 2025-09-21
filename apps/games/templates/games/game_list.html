@@ -6,11 +6,30 @@
 </head>
 <body>
 {% if game_list %}
+
 <ul>
     {% for game in game_list %}
-    <li><a href="/games/{{ game.id }}/">{{ game.title }}</a></li>
+    <li><a href="{% url 'game_detail' game.id %}">{{ game.title }}</a></li>
     {% endfor %}
 </ul>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 {% else %}
 <p>No games available.</p>
 {% endif %}

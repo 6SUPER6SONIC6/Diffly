@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search - {{ request.GET.q }}</title>
+</head>
+<body>
+<form method="get">
+    <label>
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search games...">
+    </label>
+    <button type="submit">Search</button>
+</form>
+{% if game_list %}
+
+<ul>
+    {% for game in game_list %}
+    <li><a href="{% url 'game_detail' game.id %}">{{ game.title }}</a></li>
+    {% endfor %}
+</ul>
+
+{% else %}
+<h1>No games found</h1>
+{% endif %}
+</body>
+</html>

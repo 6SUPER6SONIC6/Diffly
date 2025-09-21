@@ -5,6 +5,12 @@
     <title>Diffly - Homepage</title>
 </head>
 <body>
+<form method="get" action="{% url 'search' %}">
+    <label>
+        <input type="text" name="q" placeholder="Search games...">
+    </label>
+    <button type="submit">Search</button>
+</form>
 {% if recently_added_games %}
 <ul>
     {% for game in recently_added_games %}
