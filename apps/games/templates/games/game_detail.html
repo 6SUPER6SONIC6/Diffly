@@ -44,14 +44,14 @@
         <!-- Left column -->
         <div class="lg:col-span-2 space-y-6">
             <!-- About this game -->
-            <div class="bg-dark-card p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-bold mb-4">About This Game</h2>
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">About This Game</h2>
                 <p class="text-gray-300 whitespace-pre-line">{{ game.description }}</p>
             </div>
 
             <!-- Game details -->
-            <div class="bg-dark-card p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-bold mb-4">Game Details</h2>
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Game Details</h2>
                 <dl class="grid grid-cols-2 gap-y-2 text-sm ">
                     <dt class="text-gray-400">Developer</dt>
                     <dd class="font-medium">{{ game.developer_name|default:"—" }}</dd>
@@ -71,9 +71,9 @@
 
         <!-- Prices column -->
         <div class="space-y-6">
-            <div class="bg-dark-card p-6 rounded-lg shadow-md">
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
                 <div class="flex justify-between items-center mb-4 relative">
-                    <h2 class="text-xl font-bold">Prices</h2>
+                    <h2 class="text-2xl font-bold">Prices</h2>
                     {% with game.prices.first as price %}
                         {% if price and price.discount_percentage %}
                             <span class="discount-badge static">-{{ price.discount_percentage|floatformat:0 }}%</span>

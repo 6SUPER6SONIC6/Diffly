@@ -44,7 +44,7 @@
     <div class="max-w-7xl mx-auto">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold">Latest Releases</h2>
-            <a href="{% url 'games' %}"
+            <a href="{% url 'games' %}?release_year=2025"
                class="text-gray-400 hover:text-accent transition-colors flex items-center space-x-2">
                 <span>View All</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +118,7 @@
     <div class="max-w-7xl mx-auto">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold">Discounts</h2>
-            <a href="{% url 'games' %}"
+            <a href="{% url 'games' %}?discounted=true&ordering=discount"
                class="text-gray-400 hover:text-accent transition-colors flex items-center space-x-2">
                 <span>View All</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

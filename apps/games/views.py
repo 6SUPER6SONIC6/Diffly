@@ -1,5 +1,6 @@
-from django.db.models import Prefetch
-from django.shortcuts import render
+from django.db.models import Prefetch, Q
+from django.db.models.functions import Lower
+from django.shortcuts import render, redirect
 from django.views import generic
 
 from apps.games.models import Game, Price, GameImage
@@ -51,10 +52,63 @@ def index(request):
 
 
 class GameListView(generic.ListView):
+    model = Game
     template_name = 'games/game_list.html'
     context_object_name = 'game_list'
-    queryset = Game.objects.exclude(title__isnull=True).exclude(title__exact="").order_by('title')
     paginate_by = 30
+
+    def get_queryset(self):
+        qs = super().get_queryset().exclude(title__exact="").exclude(title__isnull=True)
+
+        # Filters
+        discounted = self.request.GET.get('discounted')
+        release_year = self.request.GET.get('release_year')
+
+        if discounted == 'true':
+            qs = qs.filter(prices__discount_percentage__gt=0, prices__is_on_sale=True)
+        elif discounted == 'false':
+            qs = qs.filter(Q(prices__is_on_sale=False) | Q(prices__isnull=True))
+
+        if release_year:
+            qs = qs.filter(release_date__year=release_year)
+
+        # Ordering
+        ordering = self.request.GET.get('ordering')
+
+        if ordering == 'title':
+            qs = qs.order_by(Lower('title'))
+        elif ordering == '-title':
+            qs = qs.order_by(Lower('title')).reverse()
+        elif ordering == 'discount':
+            qs = qs.order_by('-prices__discount_percentage')
+        elif ordering == 'release_date':
+            qs = qs.order_by('release_date')
+        elif ordering == '-release_date':
+            qs = qs.order_by('-release_date')
+        else:
+            qs = qs.order_by('-release_date')
+
+        return qs.distinct()
+
+    def get(self, request, *args, **kwargs):
+        params = request.GET.copy()
+        changed = False
+
+        if 'discounted' in params and not params['discounted']:
+            params.pop('discounted')
+            changed = True
+        if 'release_year' in params and not params['release_year']:
+            params.pop('release_year')
+            changed = True
+        if 'ordering' in params and params['ordering'] == '-release_date':
+            params.pop('ordering')
+            changed = True
+
+        if changed:
+            qs = params.urlencode()
+            return redirect(f"{request.path}?{qs}" if qs else request.path)
+
+        return super().get(request, *args, **kwargs)
 
 
 class GameDetailView(generic.DetailView):
