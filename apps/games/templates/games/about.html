@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}About This Project{% endblock %}
+
+{% block content %}
+<section class="section-spacing max-w-4xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold mb-8 text-center">About This Project</h1>
+
+    <!-- Project Overview -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">Project Overview</h2>
+        <p class="text-gray-400 leading-relaxed">
+            This application is a <strong>price tracking platform for Xbox games</strong>, designed to demonstrate my ability to build a
+            <strong>full-stack solution</strong> using modern Python technologies. It automatically collects price data, processes it,
+            and presents it to users in a clean and accessible way.
+        </p>
+    </div>
+
+    <!-- Purpose & Motivation -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">Purpose & Motivation</h2>
+        <p class="text-gray-400 leading-relaxed mb-4">
+            The project was built as a personal initiative to strengthen my experience with:
+        </p>
+        <ul class="list-disc pl-6 text-gray-400 leading-relaxed">
+            <li><strong>Web scraping</strong> (Scrapy)</li>
+            <li><strong>Data persistence & modeling</strong> (Django ORM, PostgreSQL)</li>
+            <li><strong>Backend development</strong> (Django)</li>
+            <li><strong>Frontend integration</strong> (Django templates + Tailwind CSS)</li>
+        </ul>
+        <p class="text-gray-400 leading-relaxed mt-4">
+            The problem it addresses is a common one: <em>gamers often struggle to track price differences and discounts across regions</em>.
+            This provided the perfect real-world use case to apply and refine my engineering skills.
+        </p>
+    </div>
+
+    <!-- Features -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">Features Implemented</h2>
+        <ul class="list-disc pl-6 text-gray-400 leading-relaxed">
+            <li>Automated price scraping across regions (Scrapy)</li>
+            <li>Normalized data models for games, prices, and regions (Django ORM)</li>
+            <li>Display of live discount information</li>
+            <li>Recently added games section with ordering and filters</li>
+            <li>Reusable, responsive UI components (Tailwind CSS)</li>
+        </ul>
+    </div>
+
+    <!-- Architecture -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">Technical Architecture</h2>
+        <ol class="list-decimal pl-6 text-gray-400 leading-relaxed">
+            <li><strong>Scrapy spider</strong> collects and parses price & metadata.</li>
+            <li><strong>Data pipelines</strong> clean and persist results into a database.</li>
+            <li><strong>Django models</strong> structure the data for querying and relationships.</li>
+            <li><strong>Django views & templates</strong> render the site, styled with Tailwind.</li>
+        </ol>
+    </div>
+
+    <!-- About the Developer -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">About the Developer</h2>
+        <p class="text-gray-400 leading-relaxed mb-4">
+            I’m <strong>Vadym Tantsiura</strong>, an aspiring <strong>Python Developer</strong> with a background in Android development
+            and experience with Django, REST APIs, and database-driven applications.
+            This project reflects my passion for learning, experimenting with real-world use cases, and delivering maintainable,
+            production-ready code.
+        </p>
+        <div class="flex space-x-4">
+            <a href="https://github.com/6SUPER6SONIC6" target="_blank"
+               class="text-blue-600 hover:underline">GitHub</a>
+            <a href="https://www.linkedin.com/in/vadym-tantsiura-a930a7218/" target="_blank"
+               class="text-blue-600 hover:underline">LinkedIn</a>
+        </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">Next Steps</h2>
+        <ul class="list-disc pl-6 text-gray-400 leading-relaxed">
+            <li>📈 Price history visualization</li>
+            <li>🔔 User accounts with custom alerts</li>
+            <li>🌍 Support for more platforms beyond Xbox</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}

@@ -131,3 +131,7 @@ class SearchView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q', '')
         return context
+
+
+def about(request):
+    return render(request, 'games/about.html')
