@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Find the best game prices and deals across different regions with Diffly{% endblock %}">
+    <title>{% block title %}Diffly - Game Price Comparison{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A',
+                        secondary: '#7C3AED',
+                        accent: '#84CC16',
+                        'dark-bg': '#111827',
+                        'dark-card': '#1F2937',
+                        'dark-border': '#374151'
+                    },
+                    spacing: {
+                        '18': '4.5rem',
+                        '88': '22rem'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+</head>
+<body class="bg-dark-bg text-white flex flex-col min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-dark-card border-b border-dark-border sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <a href="{% url 'index' %}" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                        <div class="w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center">
+                            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="34" height="34" rx="8" fill="#7C3AED"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M13.4961 23.0439C13.1889 23.2231 13 23.552 13 23.9077V28C13 28.5523 13.4477 29 14 29H17H20C20.5523 29 21 28.5523 21 28V23.9077C21 23.552 20.8111 23.2231 20.5039 23.0439L17.5039 21.2939C17.1925 21.1123 16.8075 21.1123 16.4961 21.2939L13.4961 23.0439Z" fill="#E70009" stroke="white" stroke-width="0.5"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9561 13.4961C10.7769 13.1889 10.448 13 10.0923 13H6C5.44771 13 5 13.4477 5 14V17V20C5 20.5523 5.44772 21 6 21H10.0923C10.448 21 10.7769 20.8111 10.9561 20.5039L12.7061 17.5039C12.8877 17.1925 12.8877 16.8075 12.7061 16.4961L10.9561 13.4961Z" fill="#107C10" stroke="white" stroke-width="0.5"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M23.0439 20.5039C23.2231 20.8111 23.552 21 23.9077 21H28C28.5523 21 29 20.5523 29 20V17V14C29 13.4477 28.5523 13 28 13H23.9077C23.552 13 23.2231 13.1889 23.0439 13.4961L21.2939 16.4961C21.1123 16.8075 21.1123 17.1925 21.2939 17.5039L23.0439 20.5039Z" fill="#00ADEE" stroke="white" stroke-width="0.5"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.5039 10.9561C20.8111 10.7769 21 10.448 21 10.0923V6C21 5.44771 20.5523 5 20 5H17H14C13.4477 5 13 5.44772 13 6V10.0923C13 10.448 13.1889 10.7769 13.4961 10.9561L16.4961 12.7061C16.8075 12.8877 17.1925 12.8877 17.5039 12.7061L20.5039 10.9561Z" fill="#003087" stroke="white" stroke-width="0.5" stroke-miterlimit="3.99393"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold text-secondary">Diffly</span>
+                    </a>
+
+                    <div class="hidden md:flex space-x-6">
+                        <a href="{% url 'index' %}"
+                           class="{% if request.resolver_match.url_name == 'index' %}nav-link-active{% else %}text-gray-300 hover:text-accent{% endif %} transition-colors">
+                            Home
+                        </a>
+                        <a href="{% url 'games' %}"
+                           class="{% if request.resolver_match.url_name == 'games' %}nav-link-active{% else %}text-gray-300 hover:text-accent{% endif %} transition-colors">
+                            All Games
+                        </a>
+                        <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}nav-link-active{% else %}text-gray-300 hover:text-accent{% endif %} transition-colors">About</a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-gray-400 hover:text-accent focus:outline-none" id="mobile-menu-btn">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
+                <div class="flex flex-col space-y-3">
+                    <a href="{% url 'index' %}" class="text-gray-300 hover:text-accent transition-colors">Home</a>
+                    <a href="{% url 'games' %}" class="text-gray-300 hover:text-accent transition-colors">All Games</a>
+                    <a href="{% url 'about' %}" class="text-gray-300 hover:text-accent transition-colors">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-card border-t border-dark-border">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-7 h-7 bg-gradient-to-br from-secondary to-primary rounded flex items-center justify-center">
+                            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="34" height="34" rx="8" fill="#7C3AED"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M13.4961 23.0439C13.1889 23.2231 13 23.552 13 23.9077V28C13 28.5523 13.4477 29 14 29H17H20C20.5523 29 21 28.5523 21 28V23.9077C21 23.552 20.8111 23.2231 20.5039 23.0439L17.5039 21.2939C17.1925 21.1123 16.8075 21.1123 16.4961 21.2939L13.4961 23.0439Z" fill="#E70009" stroke="white" stroke-width="0.5"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9561 13.4961C10.7769 13.1889 10.448 13 10.0923 13H6C5.44771 13 5 13.4477 5 14V17V20C5 20.5523 5.44772 21 6 21H10.0923C10.448 21 10.7769 20.8111 10.9561 20.5039L12.7061 17.5039C12.8877 17.1925 12.8877 16.8075 12.7061 16.4961L10.9561 13.4961Z" fill="#107C10" stroke="white" stroke-width="0.5"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M23.0439 20.5039C23.2231 20.8111 23.552 21 23.9077 21H28C28.5523 21 29 20.5523 29 20V17V14C29 13.4477 28.5523 13 28 13H23.9077C23.552 13 23.2231 13.1889 23.0439 13.4961L21.2939 16.4961C21.1123 16.8075 21.1123 17.1925 21.2939 17.5039L23.0439 20.5039Z" fill="#00ADEE" stroke="white" stroke-width="0.5"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.5039 10.9561C20.8111 10.7769 21 10.448 21 10.0923V6C21 5.44771 20.5523 5 20 5H17H14C13.4477 5 13 5.44772 13 6V10.0923C13 10.448 13.1889 10.7769 13.4961 10.9561L16.4961 12.7061C16.8075 12.8877 17.1925 12.8877 17.5039 12.7061L20.5039 10.9561Z" fill="#003087" stroke="white" stroke-width="0.5" stroke-miterlimit="3.99393"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-semibold text-secondary">Diffly</span>
+                    </div>
+                    <p class="text-gray-400 mb-4 max-w-md">
+                        Find the best game prices and deals across different regions. Compare prices and never miss a great deal again.
+                    </p>
+                </div>
+            </div>
+
+            <div class="border-t border-dark-border mt-4 pt-4 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-2 md:mb-0">© 2025 Diffly. All rights reserved.</p>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/6SUPER6SONIC6/Diffly" class="text-gray-400 hover:text-accent transition-colors">
+                        <span class="sr-only">GitHub</span>
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.300 24 12c0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('mobile-menu');
+            const button = document.getElementById('mobile-menu-btn');
+
+            if (!menu.contains(event.target) && !button.contains(event.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,41 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ game.title }}</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>{{ game.title }}</h1>
-<p>{{ game.id }} / {{ game.product_id }}</p>
-<p><b>Dev: </b>{{ game.developer_name }}</p>
-<p><b>Pub: </b>{{ game.publisher_name }}</p>
-<p><b>Release: </b>{{ game.release_date }}</p>
-<p><b>Added: </b>{{ game.created_at }}</p>
-<p><b>Updated: </b>{{ game.updated_at }}</p>
+{% block title %}{{ game.title }} – Diffly{% endblock %}
 
-
-<h3>Platforms</h3>
-<ul>
-    {% for platform in game.platforms.all %}
-    <li>{{ platform }}</li>
+{% block content %}
+<!-- Hero section -->
+<div class="relative w-full bg-dark-card overflow-hidden shadow-md rounded-none">
+    {% for img in game.images.all %}
+        {% if img.image_type == 'hero_art' %}
+            <div class="absolute inset-0">
+                <img src="{{ img.url }}" alt="" class="w-full h-full object-cover blur-sm">
+                <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            </div>
+        {% endif %}
     {% endfor %}
-</ul>
+    <div class="max-w-7xl mx-auto px-6 py-6 relative flex flex-col md:flex-row items-start md:items-center">
+        <!-- Game image -->
+        <div class="md:w-1/4 flex justify-center">
+            {% with game.images.all|dictsort:"image_type" as images %}
+                {% for img in images %}
+                    {% if img.image_type == 'poster' %}
+                        <img src="{{ img.url }}" alt="{{ game.title }}" class="rounded-lg shadow-md">
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+        </div>
 
-<p><b>Description: </b>{{ game.description|safe }}</p>
+        <!-- Game title & short description -->
+        <div class="md:w-2/3 p-6">
+            <h1 class="text-4xl font-bold mb-4">{{ game.title }}</h1>
+            {% if game.short_description %}
+                <p class="text-lg text-gray-300 mb-2">{{ game.short_description|truncatewords:50 }}</p>
+            {% elif game.description %}
+                <p class="text-lg text-gray-300 mb-2">{{ game.description|truncatewords:50 }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
-<p><b>Short Description: </b>{{ game.short_description }}</p>
-<h2>Images</h2>
-{% for image in game.images.all %}
-<img src="{{ image.url }}" width="300">
-{% endfor %}
+<!-- Main container with padding -->
+<div class="max-w-7xl mx-auto px-6 py-6">
+    <!-- Main content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left column -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- About this game -->
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">About This Game</h2>
+                <p class="text-gray-300 whitespace-pre-line">{{ game.description }}</p>
+            </div>
 
-<h2>Prices</h2>
-<ul>
-    {% for price in game.prices.all %}
-    <li><h3>{{ price.region.code }} - {{ price.region.currency_symbol }}{{ price.base_price }}</h3></li>
-    {% endfor %}
-</ul>
+            <!-- Game details -->
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Game Details</h2>
+                <dl class="grid grid-cols-2 gap-y-2 text-sm ">
+                    <dt class="text-gray-400">Developer</dt>
+                    <dd class="font-medium">{{ game.developer_name|default:"—" }}</dd>
+                    <dt class="text-gray-400">Publisher</dt>
+                    <dd class="font-medium">{{ game.publisher_name|default:"—" }}</dd>
+                    <dt class="text-gray-400">Release Date</dt>
+                    <dd class="font-medium">
+                        {% if game.release_date %}
+                            {{ game.release_date|date:"F j, Y" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
 
-</body>
-</html>
+        <!-- Prices column -->
+        <div class="space-y-6">
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <div class="flex justify-between items-center mb-4 relative">
+                    <h2 class="text-2xl font-bold">Prices</h2>
+                    {% with game.prices.first as price %}
+                        {% if price and price.discount_percentage %}
+                            <span class="discount-badge static">-{{ price.discount_percentage|floatformat:0 }}%</span>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <ul class="space-y-3">
+                    {% for price in game.prices.all %}
+                        <li class="flex items-center justify-between bg-dark-bg p-4 rounded">
+                            <div class="grid">
+                                <span class="text-xl font-bold">{{ price.region.code|upper }}</span>
+                                <span class="text-sm font-semibold text-gray-500">{{ price.region.name }}</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-white font-bold">
+                                    {{ price.region.currency_symbol }}{{ price.current_price }}
+                                </span>
+                                {% if price.is_on_sale %}
+                                    <span class="line-through text-gray-500 text-sm ml-2">
+                                        {{ price.region.currency_symbol }}{{ price.base_price }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% empty %}
+                        <p class="text-gray-400">No price information available.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
