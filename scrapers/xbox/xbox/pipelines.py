@@ -107,7 +107,8 @@ class DjangoModelPipeline:
                 }
             )
             if created:
-                store.platforms.add(platform)
+                await sync_to_async(store.platforms.add)(platform)
+                # store.platforms.add(platform)
 
             try:
                 price, created = await sync_to_async(Price.objects.update_or_create)(
