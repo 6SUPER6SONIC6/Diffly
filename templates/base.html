@@ -63,7 +63,6 @@
                            class="{% if request.resolver_match.url_name == 'games' %}nav-link-active{% else %}text-gray-300 hover:text-accent{% endif %} transition-colors">
                             All Games
                         </a>
-                        <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}nav-link-active{% else %}text-gray-300 hover:text-accent{% endif %} transition-colors">About</a>
                     </div>
                 </div>
 
@@ -82,7 +81,6 @@
                 <div class="flex flex-col space-y-3">
                     <a href="{% url 'index' %}" class="text-gray-300 hover:text-accent transition-colors">Home</a>
                     <a href="{% url 'games' %}" class="text-gray-300 hover:text-accent transition-colors">All Games</a>
-                    <a href="{% url 'about' %}" class="text-gray-300 hover:text-accent transition-colors">About</a>
                 </div>
             </div>
         </div>
