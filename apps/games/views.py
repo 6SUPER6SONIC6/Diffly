@@ -1,9 +1,10 @@
-from django.db.models import Prefetch, Q
+from django.db.models import Prefetch, Q, F
 from django.db.models.functions import Lower
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.views import generic
 
-from apps.games.models import Game, Price, GameImage
+from apps.games.models import Game, Price, GameImage, Region, Platform
 
 
 def index(request):
@@ -13,6 +14,8 @@ def index(request):
         title__exact=""
     ).exclude(
         release_date__exact=None
+    ).filter(
+     release_date__lte=timezone.now()
     ).prefetch_related(
         Prefetch(
             'images',
