@@ -44,9 +44,16 @@ def index(request):
         )
     ).distinct().order_by('-prices__discount_percentage')[:4]
 
+    total_games = Game.objects.exclude(title__isnull=True).exclude(title__exact="").count()
+    total_regions = Region.objects.all().count()
+    total_platforms = Platform.objects.all().count()
+
     context = {
         'latest_releases': latest_releases,
         'discounted_games': discounted_games,
+        'total_games': total_games,
+        'total_regions': total_regions,
+        'total_platforms': total_platforms,
     }
     return render(request, 'games/index.html', context)
 

@@ -15,7 +15,7 @@
             <span class="text-secondary">Across Different Regions</span>
         </h1>
         <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Find the best prices on your favorite games.
+            Find the best prices on your favorite games
         </p>
 
         <!-- Search Bar -->
@@ -35,6 +35,24 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-10 px-6 bg-dark-card border-t border-b border-dark-border">
+    <div class="max-w-2xl mx-auto grid grid-cols-2 md:grid-cols-3 text-center gap-6">
+        <div class="flex flex-col items-center bg-dark-bg p-4 rounded" >
+            <span class="text-4xl font-bold text-accent">{{ total_games|default:"0" }}</span>
+            <span class="text-gray-400 text-sm">Games Tracked</span>
+        </div>
+        <div class="flex flex-col items-center bg-dark-bg p-4 rounded">
+            <span class="text-4xl font-bold text-accent">{{ total_regions|default:"0" }}</span>
+            <span class="text-gray-400 text-sm">Regions Covered</span>
+        </div>
+        <div class="flex flex-col items-center bg-dark-bg p-4 rounded">
+            <span class="text-4xl font-bold text-accent">{{ total_platforms|default:"0" }}</span>
+            <span class="text-gray-400 text-sm">Platforms</span>
         </div>
     </div>
 </section>
