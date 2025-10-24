@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import timedelta
 
 from asgiref.sync import sync_to_async
 from django.db import close_old_connections
@@ -40,6 +41,10 @@ class DjangoModelPipeline:
         # spider.logger.info(f"Saving item: {product_id}({item.get('game_title')}) from {region}")
 
         release_date = parse_datetime(item.get('game_release_date')) if item.get('game_release_date') else None
+        if release_date:
+            max_valid_date = timezone.now() + timedelta(days=365 * 3)
+            if release_date > max_valid_date:
+                release_date = None
 
         try:
             # Update game's metadata for the US region only
