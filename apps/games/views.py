@@ -92,11 +92,11 @@ class GameListView(generic.ListView):
         elif ordering == 'discount':
             qs = qs.order_by('-prices__discount_percentage')
         elif ordering == 'release_date':
-            qs = qs.order_by('release_date')
-        elif ordering == '-release_date':
-            qs = qs.order_by('-release_date')
+            qs = qs.order_by(F('release_date').asc(nulls_last=True))
+        elif ordering == '-release_date' or not ordering:
+            qs = qs.order_by(F('release_date').desc(nulls_last=True))
         else:
-            qs = qs.order_by('-release_date')
+            qs = qs.order_by(F('release_date').desc(nulls_last=True))
 
         return qs.distinct()
 
