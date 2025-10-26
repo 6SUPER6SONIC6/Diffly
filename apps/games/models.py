@@ -123,5 +123,8 @@ class Price(models.Model):
             self.discount_percentage = round(
                 (self.base_price - self.current_price) / self.base_price * 100
             )
+        else:
+            self.is_on_sale = False
+            self.discount_percentage = 0
 
         super().save(*args, **kwargs)
