@@ -11,6 +11,14 @@ class Platform(models.Model):
         return self.name
 
 
+class Subscription(models.Model):
+    title = models.CharField(max_length=100)
+    product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+
 class Game(models.Model):
     title = models.CharField()
     description = models.TextField(blank=True)
@@ -24,6 +32,7 @@ class Game(models.Model):
         related_name='games',
     )
     product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
+    subscriptions = models.ManyToManyField(Subscription, blank=True, related_name='games')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Platform, Region, Price, GameImage, Game
+from .models import Platform, Region, Price, GameImage, Game, Subscription
 
 
 class PriceInline(admin.TabularInline):
@@ -19,3 +19,4 @@ class GameAdmin(admin.ModelAdmin):
 admin.site.register(Game, GameAdmin)
 admin.site.register(Platform)
 admin.site.register(Region)
+admin.site.register(Subscription)
