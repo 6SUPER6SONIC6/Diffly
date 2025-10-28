@@ -14,6 +14,12 @@ REGION_MAP = {
     "tr-TR": "TR",
 }
 
+SUBSCRIPTION_IDS = {
+    "GAME_PASS_ULTIMATE": "CFQ7TTC0K6L8",
+    "PC_GAME_PASS": "CFQ7TTC0KGQ8",
+    "EA_PLAY": "CFQ7TTC0K5DH",
+}
+
 
 class DjangoModelPipeline:
     """Pipeline that saves scraped items into the Django database. Including games, platforms, images,
@@ -134,6 +140,29 @@ class DjangoModelPipeline:
                     self.stats[region]['prices']['crt'] += 1
                 else:
                     self.stats[region]['prices']['upd'] += 1
+
+        # Checking subscriptions that include a game only for the US region.
+        if region == 'en-US':
+            subscription_product_ids = set(item.get('subscriptions', []))
+
+            if subscription_product_ids:
+                if SUBSCRIPTION_IDS['EA_PLAY'] in subscription_product_ids:
+                    subscription_product_ids.add(SUBSCRIPTION_IDS['GAME_PASS_ULTIMATE'])
+                    subscription_product_ids.add(SUBSCRIPTION_IDS['PC_GAME_PASS'])
+
+                subscription_ids = []
+                for subscription_product_id in subscription_product_ids:
+                    try:
+                        subscription = await sync_to_async(Subscription.objects.get)(product_id=subscription_product_id)
+                    except Subscription.DoesNotExist:
+                        spider.logger.warning(
+                            f"Unknown subscription product_id: {subscription_product_id} for game: {game.title}")
+                    else:
+                        subscription_ids.append(subscription.id)
+
+                await sync_to_async(game.subscriptions.set)(subscription_ids)
+            else:
+                await sync_to_async(game.subscriptions.clear)()
 
         return item
 
