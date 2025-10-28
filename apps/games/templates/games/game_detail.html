@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ game.title }} – Diffly{% endblock %}
 
@@ -67,6 +68,29 @@
                     </dd>
                 </dl>
             </div>
+            {% if game.subscriptions.exists %}
+<div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Included in these subscriptions</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {% for sub in game.subscriptions.all %}
+            <div class="flex items-center p-4 bg-dark-bg border border-dark-border rounded-lg hover:border-accent transition-colors">
+                {% if "Game Pass" in sub.title %}
+                    <img src="{% static 'images/logos/xbox.svg' %}" alt="Game Pass" class="w-8 h-8 mr-3">
+                {% elif "EA Play" in sub.title %}
+                    <img src="{% static 'images/logos/ea.svg' %}" alt="EA Play" class="w-8 h-8 mr-3">
+                {% else %}
+                    <svg class="w-8 h-8 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 7h18M3 12h18M3 17h18"/>
+                    </svg>
+                {% endif %}
+                <span class="text-gray-300 font-medium">{{ sub.title }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
         </div>
 
         <!-- Prices column -->

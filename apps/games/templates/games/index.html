@@ -89,6 +89,16 @@
                         </div>
                 {% endif %}
             {% endwith %}
+            {% if game.subscriptions.exists %}
+                            <div class="absolute bottom-2 right-2 flex space-x-2">
+                                {% if game.is_in_eaplay %}
+                                    <img src="{% static 'images/subscription_logos/eaplay.svg' %}" alt="EA Play" title="EA Play" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
+                                {% if game.is_in_gamepass %}
+                                    <img src="{% static 'images/subscription_logos/gamepass.svg' %}" alt="Game Pass" title="Game Pass" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
+                            </div>
+                        {% endif %}
         </div>
 
         <div class="p-4 flex flex-col h-full">
@@ -171,6 +181,18 @@
                             {% endif %}
                         {% endwith %}
 
+                        {# Subscription logos #}
+                        {% if game.subscriptions.exists %}
+                            <div class="absolute bottom-2 right-2 flex space-x-2">
+                                {% if game.is_in_eaplay %}
+                                    <img src="{% static 'images/subscription_logos/eaplay.svg' %}" alt="EA Play" title="EA Play" class="h-5">
+                                {% endif %}
+                                {% if game.is_in_gamepass %}
+                                    <img src="{% static 'images/subscription_logos/gamepass.svg' %}" alt="Game Pass" title="Game Pass" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all"></div>
                     </div>
                     <div class="p-4 flex flex-col h-full">
@@ -178,18 +200,12 @@
                             <h3 class="font-semibold text-white group-hover:text-accent transition-colors mb-2">{{ game.title }}</h3>
                             <p class="text-sm text-gray-400 mb-3 line-clamp-3">
                                 {% if game.short_description %}
-                                    {{ game.short_description|truncatewords:15 }}
+                                    {{ game.short_description|truncatewords:40 }}
                                 {% elif game.description %}
-                                    {{ game.description|truncatewords:15 }}
+                                    {{ game.description|truncatewords:40 }}
                                 {% endif %}
                             </p>
                         </div>
-                        {% with game.prices.first as price %}
-                            <div class="flex items-center space-x-2 mb-2 mt-auto">
-                                <span class="text-accent font-semibold">{{ price.region.currency_symbol }}{{ price.current_price }}</span>
-                                <span class="text-gray-500 line-through text-sm">{{ price.region.currency_symbol }}{{ price.base_price }}</span>
-                            </div>
-                        {% endwith %}
                     </div>
                 </a>
             </div>

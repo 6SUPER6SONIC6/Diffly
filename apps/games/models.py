@@ -36,6 +36,14 @@ class Game(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def is_in_gamepass(self):
+        return any("Game Pass" in sub.title for sub in self.subscriptions.all())
+
+    @property
+    def is_in_eaplay(self):
+        return any("EA Play" in sub.title for sub in self.subscriptions.all())
+
     def __str__(self):
         return self.title
 
