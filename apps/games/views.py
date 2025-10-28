@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import generic
 
-from apps.games.models import Game, Price, GameImage, Region, Platform
+from apps.games.models import Game, Price, GameImage, Region, Platform, Subscription
 
 
 def index(request):
@@ -67,12 +67,19 @@ class GameListView(generic.ListView):
     context_object_name = 'game_list'
     paginate_by = 30
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['all_subscriptions'] = Subscription.objects.all().order_by('title')
+        context['selected_subscription'] = self.request.GET.get('subscription', '')
+        return context
+
     def get_queryset(self):
         qs = super().get_queryset().exclude(title__exact="").exclude(title__isnull=True)
 
         # Filters
         discounted = self.request.GET.get('discounted')
         release_year = self.request.GET.get('release_year')
+        subscription_title = self.request.GET.get('subscription')
 
         if discounted == 'true':
             qs = qs.filter(prices__discount_percentage__gt=0, prices__is_on_sale=True)
@@ -81,6 +88,9 @@ class GameListView(generic.ListView):
 
         if release_year:
             qs = qs.filter(release_date__year=release_year)
+
+        if subscription_title:
+            qs = qs.filter(subscriptions__title__icontains=subscription_title)
 
         # Ordering
         ordering = self.request.GET.get('ordering')
@@ -112,6 +122,9 @@ class GameListView(generic.ListView):
             changed = True
         if 'ordering' in params and params['ordering'] == '-release_date':
             params.pop('ordering')
+            changed = True
+        if 'subscription' in params and not params['subscription']:
+            params.pop('subscription')
             changed = True
 
         if changed:

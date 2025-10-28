@@ -29,6 +29,16 @@
             </select>
         </label>
         <label>
+            <select name="subscription" class="bg-dark-card text-white rounded px-2 py-2 appearance-none">
+                <option value="">All Subscriptions</option>
+                {% for sub in all_subscriptions %}
+                    <option value="{{ sub.title }}" {% if request.GET.subscription == sub.title %}selected{% endif %}>
+                        {{ sub.title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
             <select name="ordering" class="bg-dark-card text-white rounded px-2 py-2 appearance-none">
                 <option value="-release_date" {% if request.GET.ordering == "-release_date" %}selected{% endif %}>Newest first</option>
                 <option value="release_date" {% if request.GET.ordering == "release_date" %}selected{% endif %}>Oldest first</option>
@@ -37,7 +47,7 @@
                 <option value="discount" {% if request.GET.ordering == "discount" %}selected{% endif %}>Biggest discount</option>
             </select>
         </label>
-        <button type="submit" class="bg-accent text-dark-bg rounded px-4 py-1 font-semibold hover:bg-accent-dark transition flex-shrink-0">
+            <button type="submit" class="bg-accent text-dark-bg rounded px-4 py-1 font-semibold hover:bg-accent-dark transition flex-shrink-0">
             <svg width="26" height="26" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <mask id="mask0_73_7" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="25">
                 <rect x="0.605835" y="0.418335" width="24" height="24" fill="#D9D9D9"/>
