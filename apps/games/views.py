@@ -1,5 +1,5 @@
 from django.db.models import Prefetch, Q, F
-from django.db.models.functions import Lower
+from django.db.models.functions import Lower, ExtractYear
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import generic
@@ -15,7 +15,7 @@ def index(request):
     ).exclude(
         release_date__exact=None
     ).filter(
-     release_date__lte=timezone.now()
+        release_date__lte=timezone.now()
     ).prefetch_related(
         Prefetch(
             'images',
@@ -69,6 +69,14 @@ class GameListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        release_years = (
+            Game.objects.exclude(release_date__isnull=True)
+            .annotate(year=ExtractYear('release_date'))
+            .values_list('year', flat=True)
+            .distinct()
+            .order_by('-year')
+        )
+        context['release_years'] = release_years
         context['all_subscriptions'] = Subscription.objects.all().order_by('title')
         context['selected_subscription'] = self.request.GET.get('subscription', '')
         return context
