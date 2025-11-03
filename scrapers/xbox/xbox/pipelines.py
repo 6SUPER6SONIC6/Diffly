@@ -83,6 +83,7 @@ class DjangoModelPipeline:
         if region == 'en-US':
             images = item.get('images')
             videos = item.get('videos')
+            genres = item.get('genres')
             if images:
                 for image_type, image_data in images.items():
                     match image_type:
@@ -131,6 +132,19 @@ class DjangoModelPipeline:
                         spider.logger.error(f"Failed to create/update video for {product_id}: {e}")
                     else:
                         self.stats[region]['videos'] += 1
+
+            if genres:
+                genre_ids = []
+                for genre_title in genres:
+                    try:
+                        genre = await sync_to_async(Genre.objects.get)(title=genre_title)
+                    except Genre.DoesNotExist:
+                        genre = await sync_to_async(Genre.objects.get)(title='Other')
+                        genre_ids.append(genre.id)
+                    else:
+                        genre_ids.append(genre.id)
+
+                await sync_to_async(game.genres.set)(genre_ids)
 
         if "price_base" in item and "region" in item:
             price_region = await sync_to_async(Region.objects.get)(code=region_code)
