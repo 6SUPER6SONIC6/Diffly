@@ -19,6 +19,13 @@ class Subscription(models.Model):
         return self.title
 
 
+class Genre(models.Model):
+    title = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.title
+
+
 class Game(models.Model):
     title = models.CharField()
     description = models.TextField(blank=True)
@@ -26,6 +33,7 @@ class Game(models.Model):
     developer_name = models.CharField(max_length=100, blank=True, null=True)
     publisher_name = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.DateField(null=True, blank=True)
+    genres = models.ManyToManyField(Genre, blank=True, related_name='games')
     platforms = models.ManyToManyField(
         Platform,
         through='GamePlatform',
