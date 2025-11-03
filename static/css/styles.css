@@ -1,3 +1,9 @@
+
+
+:root {
+  --plyr-color-main: #84CC16;
+}
+
 /* Fix Safari select styling */
 select {
     -webkit-appearance: none;

@@ -50,6 +50,47 @@
                 <p class="text-gray-300 whitespace-pre-line">{{ game.description }}</p>
             </div>
 
+            <!-- Video Gallery (Carousel) -->
+            {% if game.videos.exists %}
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Videos</h2>
+
+                <!-- Main Player -->
+                <video
+                        id="mainPlayer"
+                        controls
+                        playsinline
+                        class="w-full h-80 md:h-96 rounded-lg bg-black mb-6"
+                ></video>
+
+                {% if game.videos.count > 1 %}
+                <!-- Carousel Thumbnails -->
+                <div class="flex overflow-x-auto space-x-2 py-2 scrollbar-hide">
+                    {% for video in game.videos.all %}
+        <div class="video-thumbnail relative flex-shrink-0 w-56 h-32 rounded-lg overflow-hidden border-2 cursor-pointer transition-all
+                    {% if forloop.first %}border-accent{% else %}border-dark-border hover:border-accent{% endif %}"
+             data-video-url="{{ video.url }}"
+             data-poster="{{ video.preview_image_url }}"
+             data-title="{{ video.title }}">
+            <img src="{{ video.preview_image_url }}"
+                 alt="{{ video.title }}"
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity">
+                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+            </div>
+            <!-- Video title overlay -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                <p class="text-white text-xs font-medium truncate">{{ video.title }}</p>
+            </div>
+        </div>
+        {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
             <!-- Game details -->
             <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold mb-4">Game Details</h2>
@@ -130,4 +171,108 @@
         </div>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const mainVideo = document.getElementById('mainPlayer');
+    if (!mainVideo) return;
+
+    let playerInstance;
+    let hls;
+
+    // Initialize first video
+    const firstVideoUrl = '{{ game.videos.first.url }}';
+    loadVideo(firstVideoUrl);
+
+    // Add click handlers to thumbnails
+    const thumbnails = document.querySelectorAll('.video-thumbnail');
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            const videoUrl = this.getAttribute('data-video-url');
+            const posterUrl = this.getAttribute('data-poster');
+
+            // Update active thumbnail border
+            thumbnails.forEach(t => t.classList.remove('border-accent'));
+            thumbnails.forEach(t => t.classList.add('border-dark-border'));
+            this.classList.remove('border-dark-border');
+            this.classList.add('border-accent');
+
+            // Update poster and load video
+            mainVideo.setAttribute('poster', posterUrl);
+            loadVideo(videoUrl);
+        });
+    });
+
+    function loadVideo(url) {
+        // Clean up existing HLS instance
+        if (hls) {
+            hls.destroy();
+        }
+
+        if (Hls.isSupported()) {
+            hls = new Hls({
+                enableWorker: true,
+                lowLatencyMode: false,
+            });
+            hls.loadSource(url);
+            hls.attachMedia(mainVideo);
+
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                // Initialize or update Plyr instance
+                if (!playerInstance) {
+                    playerInstance = new Plyr(mainVideo, {
+                        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+                        settings: ['quality', 'speed'],
+                    });
+                }
+            });
+
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    console.error('Fatal HLS error:', data);
+                }
+            });
+        } else if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
+            // Native HLS support (Safari)
+            mainVideo.src = url;
+            if (!playerInstance) {
+                playerInstance = new Plyr(mainVideo, {
+                    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+                });
+            }
+        } else {
+            console.error('HLS is not supported in this browser');
+        }
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (hls) {
+            hls.destroy();
+        }
+        if (playerInstance) {
+            playerInstance.destroy();
+        }
+    });
+});
+</script>
+
+<style>
+    /* Smooth scroll snapping */
+.snap-x {
+    scroll-snap-type: x mandatory;
+}
+.video-thumbnail {
+    scroll-snap-align: start;
+}
+
+/* Custom Plyr styling to match dark theme */
+.plyr--video {
+    background: transparent;
+}
+</style>
 {% endblock %}
