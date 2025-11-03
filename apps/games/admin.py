@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Platform, Region, Price, GameImage, Game, Subscription
+from .models import Platform, Region, Price, GameImage, Game, Subscription, GameVideo
 
 
 class PriceInline(admin.TabularInline):
@@ -11,8 +11,12 @@ class GameImageInline(admin.TabularInline):
     model = GameImage
     extra = 0
 
+class GameVideoInline(admin.TabularInline):
+    model = GameVideo
+    extra = 0
+
 class GameAdmin(admin.ModelAdmin):
-    inlines = [PriceInline, GameImageInline]
+    inlines = [PriceInline, GameImageInline, GameVideoInline]
     list_filter = ('title',)
     search_fields = ('title', 'product_id')
 

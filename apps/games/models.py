@@ -70,6 +70,19 @@ class GameImage(models.Model):
         return f"{self.game.title} - {self.get_image_type_display()}"
 
 
+class GameVideo(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='videos')
+    title = models.CharField(max_length=100)
+    url = models.URLField()
+    type = models.CharField(max_length=100)
+    height = models.PositiveIntegerField(null=True, blank=True)
+    width = models.PositiveIntegerField(null=True, blank=True)
+    preview_image_url = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.title} - {self.type}'
+
+
 class Region(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=10, unique=True)
