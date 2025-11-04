@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import generic
 
-from apps.games.models import Game, Price, GameImage, Region, Platform, Subscription
+from apps.games.models import Game, Price, GameImage, Region, Platform, Subscription, Genre
 
 
 def index(request):
@@ -77,8 +77,12 @@ class GameListView(generic.ListView):
             .order_by('-year')
         )
         context['release_years'] = release_years
+
         context['all_subscriptions'] = Subscription.objects.all().order_by('title')
         context['selected_subscription'] = self.request.GET.get('subscription', '')
+
+        context['all_genres'] = Genre.objects.all().order_by('title')
+        context['selected_genre'] = self.request.GET.get('genre', '')
         return context
 
     def get_queryset(self):
@@ -88,6 +92,7 @@ class GameListView(generic.ListView):
         discounted = self.request.GET.get('discounted')
         release_year = self.request.GET.get('release_year')
         subscription_title = self.request.GET.get('subscription')
+        genre_title = self.request.GET.get('genre')
 
         if discounted == 'true':
             qs = qs.filter(prices__discount_percentage__gt=0, prices__is_on_sale=True)
@@ -99,6 +104,9 @@ class GameListView(generic.ListView):
 
         if subscription_title:
             qs = qs.filter(subscriptions__title__icontains=subscription_title)
+
+        if genre_title:
+            qs = qs.filter(genres__title=genre_title)
 
         # Ordering
         ordering = self.request.GET.get('ordering')
@@ -133,6 +141,9 @@ class GameListView(generic.ListView):
             changed = True
         if 'subscription' in params and not params['subscription']:
             params.pop('subscription')
+            changed = True
+        if 'genre' in params and not params['genre']:
+            params.pop('genre')
             changed = True
 
         if changed:
