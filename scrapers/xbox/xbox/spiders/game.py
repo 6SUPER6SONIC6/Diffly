@@ -170,7 +170,10 @@ class GameSpider(scrapy.Spider):
         item['game_publisher_name'] = game_data.get('publisherName')
         item['game_release_date'] = game_data.get('releaseDate')
         item['product_id'] = game_data.get('productId')
+        item['subscriptions'] = game_data.get('includedWithPassesProductIds')
         item['images'] = game_data.get('images')
+        item['videos'] = game_data.get('cmsVideos')
+        item['genres'] = game_data.get('categories')
 
         prices = game_data.get('specificPrices', {}).get('purchaseable', [])
         if prices:

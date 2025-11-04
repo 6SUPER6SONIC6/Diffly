@@ -10,45 +10,140 @@
             <span class="text-sm text-gray-400">Showing {{ paginator.count }} games</span>
         </div>
 
-        <div class="flex justify-start items-center mb-6 mx-auto">
-    <form method="get" class="w-full md:w-auto">
-        <div class="flex flex-wrap gap-2 items-center justify-start">
-        <label>
-            <select name="discounted" class="bg-dark-card text-white rounded min-w-[120px] px-2 py-2 appearance-none">
+        <div class="bg-dark-card border border-dark-border rounded-lg p-4 mb-6 shadow-md">
+  <form method="get" class="flex flex-wrap md:flex-nowrap items-end justify-between gap-4">
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-4">
+      <!-- Discount -->
+      <div class="flex flex-col w-full md:min-w-[140px] md:w-auto">
+        <label class="text-s md:text-xs text-gray-400 mb-1 flex items-center gap-1">
+          <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="mask0_124_32" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                  <rect width="24" height="24" fill="#D9D9D9"/>
+              </mask>
+              <g mask="url(#mask0_124_32)">
+                  <path d="M12 22C11.6 22 11.2167 21.925 10.85 21.775C10.4833 21.625 10.1583 21.4083 9.875 21.125C9.39167 20.6417 8.975 20.325 8.625 20.175C8.275 20.025 7.75 19.95 7.05 19.95C6.21667 19.95 5.50833 19.6583 4.925 19.075C4.34167 18.4917 4.05 17.7833 4.05 16.95C4.05 16.25 3.975 15.725 3.825 15.375C3.675 15.025 3.35833 14.6083 2.875 14.125C2.59167 13.8417 2.375 13.5167 2.225 13.15C2.075 12.7833 2 12.4 2 12C2 11.6 2.075 11.2167 2.225 10.85C2.375 10.4833 2.59167 10.1583 2.875 9.875C3.35833 9.39167 3.675 8.975 3.825 8.625C3.975 8.275 4.05 7.75 4.05 7.05C4.05 6.21667 4.34167 5.50833 4.925 4.925C5.50833 4.34167 6.21667 4.05 7.05 4.05C7.75 4.05 8.275 3.975 8.625 3.825C8.975 3.675 9.39167 3.35833 9.875 2.875C10.1583 2.59167 10.4833 2.375 10.85 2.225C11.2167 2.075 11.6 2 12 2C12.4 2 12.7833 2.075 13.15 2.225C13.5167 2.375 13.8417 2.59167 14.125 2.875C14.6083 3.35833 15.025 3.675 15.375 3.825C15.725 3.975 16.25 4.05 16.95 4.05C17.7833 4.05 18.4917 4.34167 19.075 4.925C19.6583 5.50833 19.95 6.21667 19.95 7.05C19.95 7.75 20.025 8.275 20.175 8.625C20.325 8.975 20.6417 9.39167 21.125 9.875C21.4083 10.1583 21.625 10.4833 21.775 10.85C21.925 11.2167 22 11.6 22 12C22 12.4 21.925 12.7833 21.775 13.15C21.625 13.5167 21.4083 13.8417 21.125 14.125C20.6417 14.6083 20.325 15.025 20.175 15.375C20.025 15.725 19.95 16.25 19.95 16.95C19.95 17.7833 19.6583 18.4917 19.075 19.075C18.4917 19.6583 17.7833 19.95 16.95 19.95C16.25 19.95 15.725 20.025 15.375 20.175C15.025 20.325 14.6083 20.6417 14.125 21.125C13.8417 21.4083 13.5167 21.625 13.15 21.775C12.7833 21.925 12.4 22 12 22ZM12 20C12.1333 20 12.2625 19.9708 12.3875 19.9125C12.5125 19.8542 12.6167 19.7833 12.7 19.7C13.3833 19.0167 14.025 18.5542 14.625 18.3125C15.225 18.0708 16 17.95 16.95 17.95C17.2333 17.95 17.4708 17.8542 17.6625 17.6625C17.8542 17.4708 17.95 17.2333 17.95 16.95C17.95 15.9833 18.0708 15.2042 18.3125 14.6125C18.5542 14.0208 19.0167 13.3833 19.7 12.7C19.9 12.5 20 12.2667 20 12C20 11.7333 19.9 11.5 19.7 11.3C19.0167 10.6167 18.5542 9.975 18.3125 9.375C18.0708 8.775 17.95 8 17.95 7.05C17.95 6.76667 17.8542 6.52917 17.6625 6.3375C17.4708 6.14583 17.2333 6.05 16.95 6.05C15.9833 6.05 15.2042 5.92917 14.6125 5.6875C14.0208 5.44583 13.3833 4.98333 12.7 4.3C12.6167 4.21667 12.5125 4.14583 12.3875 4.0875C12.2625 4.02917 12.1333 4 12 4C11.8667 4 11.7375 4.02917 11.6125 4.0875C11.4875 4.14583 11.3833 4.21667 11.3 4.3C10.6167 4.98333 9.975 5.44583 9.375 5.6875C8.775 5.92917 8 6.05 7.05 6.05C6.76667 6.05 6.52917 6.14583 6.3375 6.3375C6.14583 6.52917 6.05 6.76667 6.05 7.05C6.05 8.01667 5.92917 8.79583 5.6875 9.3875C5.44583 9.97917 4.98333 10.6167 4.3 11.3C4.1 11.5 4 11.7333 4 12C4 12.2667 4.1 12.5 4.3 12.7C4.98333 13.3833 5.44583 14.025 5.6875 14.625C5.92917 15.225 6.05 16 6.05 16.95C6.05 17.2333 6.14583 17.4708 6.3375 17.6625C6.52917 17.8542 6.76667 17.95 7.05 17.95C8.01667 17.95 8.79583 18.0708 9.3875 18.3125C9.97917 18.5542 10.6167 19.0167 11.3 19.7C11.3833 19.7833 11.4875 19.8542 11.6125 19.9125C11.7375 19.9708 11.8667 20 12 20ZM14.5 16C14.9167 16 15.2708 15.8542 15.5625 15.5625C15.8542 15.2708 16 14.9167 16 14.5C16 14.0833 15.8542 13.7292 15.5625 13.4375C15.2708 13.1458 14.9167 13 14.5 13C14.0833 13 13.7292 13.1458 13.4375 13.4375C13.1458 13.7292 13 14.0833 13 14.5C13 14.9167 13.1458 15.2708 13.4375 15.5625C13.7292 15.8542 14.0833 16 14.5 16ZM9.45 15.95L15.95 9.45L14.55 8.05L8.05 14.55L9.45 15.95ZM9.5 11C9.91667 11 10.2708 10.8542 10.5625 10.5625C10.8542 10.2708 11 9.91667 11 9.5C11 9.08333 10.8542 8.72917 10.5625 8.4375C10.2708 8.14583 9.91667 8 9.5 8C9.08333 8 8.72917 8.14583 8.4375 8.4375C8.14583 8.72917 8 9.08333 8 9.5C8 9.91667 8.14583 10.2708 8.4375 10.5625C8.72917 10.8542 9.08333 11 9.5 11Z" fill="#84CC16"/>
+              </g>
+          </svg>
+          Discount
+        </label>
+          <label>
+              <select name="discounted" class="bg-dark-bg border border-dark-border text-gray-200 text-sm rounded px-3 py-2 focus:border-accent transition w-full md:w-auto">
                 <option value="" {% if not request.GET.discounted %}selected{% endif %}>All</option>
-                <option value="true" {% if request.GET.discounted == "true" %}selected{% endif %}>Discounted only</option>
+                <option value="true" {% if request.GET.discounted == "true" %}selected{% endif %}>Discounted</option>
                 <option value="false" {% if request.GET.discounted == "false" %}selected{% endif %}>Without discount</option>
-            </select>
+              </select>
+          </label>
+      </div>
+
+      <!-- Year -->
+      <div class="flex flex-col w-full md:min-w-[140px] md:w-auto">
+        <label class="text-s md:text-xs text-gray-400 mb-1 flex items-center gap-1">
+            <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <mask id="mask0_124_26" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                    <rect width="24" height="24" fill="#D9D9D9"/>
+                </mask>
+                <g mask="url(#mask0_124_26)">
+                    <path d="M5 22C4.45 22 3.97917 21.8042 3.5875 21.4125C3.19583 21.0208 3 20.55 3 20V6C3 5.45 3.19583 4.97917 3.5875 4.5875C3.97917 4.19583 4.45 4 5 4H6V2H8V4H16V2H18V4H19C19.55 4 20.0208 4.19583 20.4125 4.5875C20.8042 4.97917 21 5.45 21 6V20C21 20.55 20.8042 21.0208 20.4125 21.4125C20.0208 21.8042 19.55 22 19 22H5ZM5 20H19V10H5V20ZM5 8H19V6H5V8Z" fill="#84CC16"/>
+                </g>
+            </svg>
+          Release Year
         </label>
-        <label>
-            <select name="release_year" class="bg-dark-card text-white rounded px-2 py-2 appearance-none">
-                <option value="" {% if not request.GET.release_year %}selected{% endif %}>All years</option>
-                <option value="2025" {% if request.GET.release_year == "2025" %}selected{% endif %}>2025</option>
-                <option value="2024" {% if request.GET.release_year == "2024" %}selected{% endif %}>2024</option>
-                <option value="2023" {% if request.GET.release_year == "2023" %}selected{% endif %}>2023</option>
+
+              <select name="release_year" class="bg-dark-bg border border-dark-border text-gray-200 text-sm rounded px-3 py-2 focus:border-accent transition w-full md:w-auto">
+                <option value="">All years</option>
+                {% for year in release_years %}
+                  <option value="{{ year }}" {% if request.GET.release_year == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+              </select>
+
+      </div>
+
+        <!-- Genres -->
+        <div class="flex flex-col w-full md:min-w-[200px] md:w-auto">
+            <label class="text-s md:text-xs text-gray-400 mb-1 flex items-center gap-1">
+                <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <mask id="mask0_177_8" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                        <rect width="24" height="24" fill="#D9D9D9"/>
+                    </mask>
+                    <g mask="url(#mask0_177_8)">
+                        <path d="M19.05 21.5999L16.125 18.6999L13.925 20.8999L13.225 20.1999C12.8417 19.8166 12.65 19.3416 12.65 18.7749C12.65 18.2082 12.8417 17.7332 13.225 17.3499L17.45 13.1249C17.8333 12.7416 18.3083 12.5499 18.875 12.5499C19.4417 12.5499 19.9167 12.7416 20.3 13.1249L21 13.8249L18.8 16.0249L21.7 18.9499C21.9 19.1499 22 19.3832 22 19.6499C22 19.9166 21.9 20.1499 21.7 20.3499L20.45 21.5999C20.25 21.7999 20.0167 21.8999 19.75 21.8999C19.4833 21.8999 19.25 21.7999 19.05 21.5999ZM22 5.8999L10.65 17.2499L10.775 17.3499C11.1583 17.7332 11.35 18.2082 11.35 18.7749C11.35 19.3416 11.1583 19.8166 10.775 20.1999L10.075 20.8999L7.875 18.6999L4.95 21.5999C4.75 21.7999 4.51667 21.8999 4.25 21.8999C3.98333 21.8999 3.75 21.7999 3.55 21.5999L2.3 20.3499C2.1 20.1499 2 19.9166 2 19.6499C2 19.3832 2.1 19.1499 2.3 18.9499L5.2 16.0249L3 13.8249L3.7 13.1249C4.08333 12.7416 4.55833 12.5499 5.125 12.5499C5.69167 12.5499 6.16667 12.7416 6.55 13.1249L6.65 13.2499L18 1.8999H22V5.8999ZM6.95 10.8499L2 5.8999V1.8999H6L10.95 6.8499L9.525 8.2499L5.175 3.8999H4V5.0749L8.35 9.4249L6.95 10.8499ZM9.25 15.8249L20 5.0749V3.8999H18.825L8.075 14.6499L9.25 15.8249Z" fill="#84CC16"/>
+                    </g>
+                </svg>
+                Genre
+            </label>
+
+            <select name="genre"
+                    class="bg-dark-bg border border-dark-border text-gray-200 text-sm rounded px-3 py-2 focus:border-accent transition w-full md:w-auto">
+                <option value="">All Genres</option>
+                {% for genre in all_genres %}
+                <option value="{{ genre.title }}" {% if request.GET.genre == genre.title %}selected{% endif %}>{{ genre.title }}</option>
+                {% endfor %}
             </select>
+        </div>
+
+      <!-- Subscription -->
+      <div class="flex flex-col w-full md:min-w-[140px] md:w-auto">
+        <label class="text-s md:text-xs text-gray-400 mb-1 flex items-center gap-1">
+          <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="mask0_124_20" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                  <rect width="24" height="24" fill="#D9D9D9"/>
+              </mask>
+              <g mask="url(#mask0_124_20)">
+                  <path d="M11.1 19H12.85V17.75C13.6833 17.6 14.4 17.275 15 16.775C15.6 16.275 15.9 15.5333 15.9 14.55C15.9 13.85 15.7 13.2083 15.3 12.625C14.9 12.0417 14.1 11.5333 12.9 11.1C11.9 10.7667 11.2083 10.475 10.825 10.225C10.4417 9.975 10.25 9.63333 10.25 9.2C10.25 8.76667 10.4042 8.425 10.7125 8.175C11.0208 7.925 11.4667 7.8 12.05 7.8C12.5833 7.8 13 7.92917 13.3 8.1875C13.6 8.44583 13.8167 8.76667 13.95 9.15L15.55 8.5C15.3667 7.91667 15.0292 7.40833 14.5375 6.975C14.0458 6.54167 13.5 6.3 12.9 6.25V5H11.15V6.25C10.3167 6.43333 9.66667 6.8 9.2 7.35C8.73333 7.9 8.5 8.51667 8.5 9.2C8.5 9.98333 8.72917 10.6167 9.1875 11.1C9.64583 11.5833 10.3667 12 11.35 12.35C12.4 12.7333 13.1292 13.075 13.5375 13.375C13.9458 13.675 14.15 14.0667 14.15 14.55C14.15 15.1 13.9542 15.5042 13.5625 15.7625C13.1708 16.0208 12.7 16.15 12.15 16.15C11.6 16.15 11.1125 15.9792 10.6875 15.6375C10.2625 15.2958 9.95 14.7833 9.75 14.1L8.1 14.75C8.33333 15.55 8.69583 16.1958 9.1875 16.6875C9.67917 17.1792 10.3167 17.5167 11.1 17.7V19ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.875 17.675 6.325C16.125 4.775 14.2333 4 12 4C9.76667 4 7.875 4.775 6.325 6.325C4.775 7.875 4 9.76667 4 12C4 14.2333 4.775 16.125 6.325 17.675C7.875 19.225 9.76667 20 12 20Z" fill="#84CC16"/>
+              </g>
+          </svg>
+          Included In
         </label>
-        <label>
-            <select name="ordering" class="bg-dark-card text-white rounded px-2 py-2 appearance-none">
+          <label>
+              <select name="subscription" class="bg-dark-bg border border-dark-border text-gray-200 text-sm rounded px-3 py-2 focus:border-accent transition w-full md:w-auto">
+                <option value="">All Subscriptions</option>
+                {% for sub in all_subscriptions %}
+                  <option value="{{ sub.title }}" {% if request.GET.subscription == sub.title %}selected{% endif %}>{{ sub.title }}</option>
+                {% endfor %}
+              </select>
+          </label>
+      </div>
+
+      <!-- Ordering -->
+      <div class="flex flex-col w-full md:min-w-[140px] md:w-auto">
+        <label class="text-s md:text-xs text-gray-400 mb-1 flex items-center gap-1">
+            <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <mask id="mask0_123_14" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                <rect width="24" height="24" fill="#D9D9D9"/>
+                </mask>
+                <g mask="url(#mask0_123_14)">
+                <path d="M8 13V5.825L5.425 8.4L4 7L9 2L14 7L12.575 8.4L10 5.825V13H8ZM15 22L10 17L11.425 15.6L14 18.175V11H16V18.175L18.575 15.6L20 17L15 22Z" fill="#84CC16"/>
+                </g>
+            </svg>
+          Sort By
+        </label>
+          <label>
+              <select name="ordering" class="bg-dark-bg border border-dark-border text-gray-200 text-sm rounded px-3 py-2 focus:border-accent transition w-full md:w-auto">
                 <option value="-release_date" {% if request.GET.ordering == "-release_date" %}selected{% endif %}>Newest first</option>
                 <option value="release_date" {% if request.GET.ordering == "release_date" %}selected{% endif %}>Oldest first</option>
                 <option value="title" {% if request.GET.ordering == "title" %}selected{% endif %}>Title A–Z</option>
                 <option value="-title" {% if request.GET.ordering == "-title" %}selected{% endif %}>Title Z–A</option>
                 <option value="discount" {% if request.GET.ordering == "discount" %}selected{% endif %}>Biggest discount</option>
-            </select>
-        </label>
-        <button type="submit" class="bg-accent text-dark-bg rounded px-4 py-1 font-semibold hover:bg-accent-dark transition flex-shrink-0">
-            <svg width="26" height="26" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <mask id="mask0_73_7" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="25">
-                <rect x="0.605835" y="0.418335" width="24" height="24" fill="#D9D9D9"/>
-                </mask>
-                <g mask="url(#mask0_73_7)">
-                <path d="M10.1558 18.4183L4.45581 12.7183L5.88081 11.2933L10.1558 15.5683L19.3308 6.39331L20.7558 7.81831L10.1558 18.4183Z" fill="black"/>
-                </g>
-            </svg>
-        </button>
-        </div>
-    </form>
+              </select>
+          </label>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex flex-col md:flex-row items-stretch gap-2 w-full md:w-auto justify-center md:justify-end mt-3 md:mt-0">
+      <button type="submit" class="flex items-center justify-center bg-accent text-dark-bg rounded px-4 py-2 font-semibold hover:bg-accent-dark transition">
+        Apply
+      </button>
+
+      {% if request.GET %}
+        <a href="{% url 'games' %}" class="flex items-center justify-center border border-dark-border text-gray-400 hover:border-accent hover:text-white rounded px-4 py-2 text-sm transition">
+          Reset
+        </a>
+      {% endif %}
+    </div>
+  </form>
 </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
@@ -73,6 +168,16 @@
                                 </div>
                             {% endif %}
                         {% endwith %}
+                        {% if game.subscriptions.exists %}
+                            <div class="absolute bottom-2 right-2 flex space-x-2">
+                                {% if game.is_in_eaplay %}
+                                    <img src="{% static 'images/subscription_logos/eaplay.svg' %}" alt="EA Play" title="EA Play" class="h-5">
+                                {% endif %}
+                                {% if game.is_in_gamepass %}
+                                    <img src="{% static 'images/subscription_logos/gamepass.svg' %}" alt="Game Pass" title="Game Pass" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
+                            </div>
+                        {% endif %}
                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all"></div>
                     </div>
                     <div class="p-3 flex flex-col h-full">

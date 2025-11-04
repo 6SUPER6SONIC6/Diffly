@@ -13,6 +13,9 @@ class XboxItem(scrapy.Item):
     game_developer_name = scrapy.Field()
     game_publisher_name = scrapy.Field()
     game_release_date = scrapy.Field()
+    subscriptions = scrapy.Field()
+    videos = scrapy.Field()
+    genres = scrapy.Field()
     product_id = scrapy.Field()
 
     images = scrapy.Field()

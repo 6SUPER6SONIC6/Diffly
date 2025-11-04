@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ game.title }} – Diffly{% endblock %}
 
@@ -46,27 +47,111 @@
             <!-- About this game -->
             <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold mb-4">About This Game</h2>
-                <p class="text-gray-300 whitespace-pre-line">{{ game.description }}</p>
+                <div id="description-container" class="text-gray-300 whitespace-pre-line relative overflow-hidden transition-all duration-300 max-h-[200px]">
+                    {{ game.description }}
+                    <div id="fade-overlay" class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-dark-card to-transparent pointer-events-none"></div>
+                </div>
+                <button id="toggle-description" class="mt-3 text-accent text-sm font-semibold hover:underline focus:outline-none">Show more</button>
             </div>
+
+            <!-- Video Gallery (Carousel) -->
+            {% if game.videos.exists %}
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Videos</h2>
+
+                <!-- Main Player -->
+                <video
+                        id="mainPlayer"
+                        controls
+                        playsinline
+                        class="w-full h-80 md:h-96 rounded-lg bg-black mb-6"
+                ></video>
+
+                {% if game.videos.count > 1 %}
+                <!-- Carousel Thumbnails -->
+                <div class="flex overflow-x-auto space-x-2 py-2 scrollbar-hide">
+                    {% for video in game.videos.all %}
+        <div class="video-thumbnail relative flex-shrink-0 w-56 h-32 rounded-lg overflow-hidden border-2 cursor-pointer transition-all
+                    {% if forloop.first %}border-accent{% else %}border-dark-border hover:border-accent{% endif %}"
+             data-video-url="{{ video.url }}"
+             data-poster="{{ video.preview_image_url }}"
+             data-title="{{ video.title }}">
+            <img src="{{ video.preview_image_url }}"
+                 alt="{{ video.title }}"
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity">
+                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+            </div>
+            <!-- Video title overlay -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                <p class="text-white text-xs font-medium truncate">{{ video.title }}</p>
+            </div>
+        </div>
+        {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
 
             <!-- Game details -->
             <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold mb-4">Game Details</h2>
-                <dl class="grid grid-cols-2 gap-y-2 text-sm ">
-                    <dt class="text-gray-400">Developer</dt>
-                    <dd class="font-medium">{{ game.developer_name|default:"—" }}</dd>
-                    <dt class="text-gray-400">Publisher</dt>
-                    <dd class="font-medium">{{ game.publisher_name|default:"—" }}</dd>
-                    <dt class="text-gray-400">Release Date</dt>
-                    <dd class="font-medium">
-                        {% if game.release_date %}
-                            {{ game.release_date|date:"F j, Y" }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </dd>
-                </dl>
+                <ul class="divide-y divide-dark-border/50">
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Developer</span>
+                        <span class="text-gray-100 font-medium">{{ game.developer_name|default:"—" }}</span>
+                    </li>
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Publisher</span>
+                        <span class="text-gray-100 font-medium">{{ game.publisher_name|default:"—" }}</span>
+                    </li>
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Release Date</span>
+                        <span class="text-gray-100 font-medium">
+                            {% if game.release_date %}
+                                {{ game.release_date|date:"F j, Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </span>
+                    </li>
+                    {% if game.genres.exists %}
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Genres</span>
+                        <div class="text-right text-gray-100 font-medium space-x-1">
+                            {% for genre in game.genres.all %}
+                            <span class="hover:text-accent transition-colors">{{ genre.title }}</span>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
+            {% if game.subscriptions.exists %}
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Included in these subscriptions</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {% for sub in game.subscriptions.all %}
+            <div class="flex items-center p-4 bg-dark-bg border border-dark-border rounded-lg hover:border-accent transition-colors">
+                {% if "Game Pass" in sub.title %}
+                    <img src="{% static 'images/logos/xbox.svg' %}" alt="Game Pass" class="w-8 h-8 mr-3">
+                {% elif "EA Play" in sub.title %}
+                    <img src="{% static 'images/logos/ea.svg' %}" alt="EA Play" class="w-8 h-8 mr-3">
+                {% else %}
+                    <svg class="w-8 h-8 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 7h18M3 12h18M3 17h18"/>
+                    </svg>
+                {% endif %}
+                <span class="text-gray-300 font-medium">{{ sub.title }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
         </div>
 
         <!-- Prices column -->
@@ -106,4 +191,135 @@
         </div>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+<script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const container = document.getElementById('description-container');
+                    const button = document.getElementById('toggle-description');
+                    const overlay = document.getElementById('fade-overlay');
+
+                    if (container.scrollHeight <= 220) {
+                        button.style.display = 'none';
+                        overlay.style.display = 'none';
+                    }
+
+                    let expanded = false;
+                    button.addEventListener('click', () => {
+                        expanded = !expanded;
+                        if (expanded) {
+                            container.style.maxHeight = container.scrollHeight + 'px';
+                            overlay.style.display = 'none';
+                            button.textContent = 'Show less';
+                        } else {
+                            container.style.maxHeight = '200px';
+                            overlay.style.display = 'block';
+                            button.textContent = 'Show more';
+                        }
+                    });
+                });
+                </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const mainVideo = document.getElementById('mainPlayer');
+    if (!mainVideo) return;
+
+    let playerInstance;
+    let hls;
+
+    // Initialize first video
+    const firstVideoUrl = '{{ game.videos.first.url }}';
+    loadVideo(firstVideoUrl);
+
+    // Add click handlers to thumbnails
+    const thumbnails = document.querySelectorAll('.video-thumbnail');
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            const videoUrl = this.getAttribute('data-video-url');
+            const posterUrl = this.getAttribute('data-poster');
+
+            // Update active thumbnail border
+            thumbnails.forEach(t => t.classList.remove('border-accent'));
+            thumbnails.forEach(t => t.classList.add('border-dark-border'));
+            this.classList.remove('border-dark-border');
+            this.classList.add('border-accent');
+
+            // Update poster and load video
+            mainVideo.setAttribute('poster', posterUrl);
+            loadVideo(videoUrl);
+        });
+    });
+
+    function loadVideo(url) {
+        // Clean up existing HLS instance
+        if (hls) {
+            hls.destroy();
+        }
+
+        if (Hls.isSupported()) {
+            hls = new Hls({
+                enableWorker: true,
+                lowLatencyMode: false,
+            });
+            hls.loadSource(url);
+            hls.attachMedia(mainVideo);
+
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                // Initialize or update Plyr instance
+                if (!playerInstance) {
+                    playerInstance = new Plyr(mainVideo, {
+                        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+                        settings: ['quality', 'speed'],
+                    });
+                }
+            });
+
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    console.error('Fatal HLS error:', data);
+                }
+            });
+        } else if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
+            // Native HLS support (Safari)
+            mainVideo.src = url;
+            if (!playerInstance) {
+                playerInstance = new Plyr(mainVideo, {
+                    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+                });
+            }
+        } else {
+            console.error('HLS is not supported in this browser');
+        }
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (hls) {
+            hls.destroy();
+        }
+        if (playerInstance) {
+            playerInstance.destroy();
+        }
+    });
+});
+</script>
+
+<style>
+    /* Smooth scroll snapping */
+.snap-x {
+    scroll-snap-type: x mandatory;
+}
+.video-thumbnail {
+    scroll-snap-align: start;
+}
+
+/* Custom Plyr styling to match dark theme */
+.plyr--video {
+    background: transparent;
+}
+</style>
 {% endblock %}

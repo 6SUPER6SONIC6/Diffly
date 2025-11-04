@@ -1,10 +1,10 @@
 from django.db.models import Prefetch, Q, F
-from django.db.models.functions import Lower
+from django.db.models.functions import Lower, ExtractYear
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import generic
 
-from apps.games.models import Game, Price, GameImage, Region, Platform
+from apps.games.models import Game, Price, GameImage, Region, Platform, Subscription, Genre
 
 
 def index(request):
@@ -15,7 +15,7 @@ def index(request):
     ).exclude(
         release_date__exact=None
     ).filter(
-     release_date__lte=timezone.now()
+        release_date__lte=timezone.now()
     ).prefetch_related(
         Prefetch(
             'images',
@@ -67,12 +67,32 @@ class GameListView(generic.ListView):
     context_object_name = 'game_list'
     paginate_by = 30
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        release_years = (
+            Game.objects.exclude(release_date__isnull=True)
+            .annotate(year=ExtractYear('release_date'))
+            .values_list('year', flat=True)
+            .distinct()
+            .order_by('-year')
+        )
+        context['release_years'] = release_years
+
+        context['all_subscriptions'] = Subscription.objects.all().order_by('title')
+        context['selected_subscription'] = self.request.GET.get('subscription', '')
+
+        context['all_genres'] = Genre.objects.all().order_by('title')
+        context['selected_genre'] = self.request.GET.get('genre', '')
+        return context
+
     def get_queryset(self):
         qs = super().get_queryset().exclude(title__exact="").exclude(title__isnull=True)
 
         # Filters
         discounted = self.request.GET.get('discounted')
         release_year = self.request.GET.get('release_year')
+        subscription_title = self.request.GET.get('subscription')
+        genre_title = self.request.GET.get('genre')
 
         if discounted == 'true':
             qs = qs.filter(prices__discount_percentage__gt=0, prices__is_on_sale=True)
@@ -81,6 +101,12 @@ class GameListView(generic.ListView):
 
         if release_year:
             qs = qs.filter(release_date__year=release_year)
+
+        if subscription_title:
+            qs = qs.filter(subscriptions__title__icontains=subscription_title)
+
+        if genre_title:
+            qs = qs.filter(genres__title=genre_title)
 
         # Ordering
         ordering = self.request.GET.get('ordering')
@@ -112,6 +138,12 @@ class GameListView(generic.ListView):
             changed = True
         if 'ordering' in params and params['ordering'] == '-release_date':
             params.pop('ordering')
+            changed = True
+        if 'subscription' in params and not params['subscription']:
+            params.pop('subscription')
+            changed = True
+        if 'genre' in params and not params['genre']:
+            params.pop('genre')
             changed = True
 
         if changed:

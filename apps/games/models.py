@@ -11,6 +11,21 @@ class Platform(models.Model):
         return self.name
 
 
+class Subscription(models.Model):
+    title = models.CharField(max_length=100)
+    product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Genre(models.Model):
+    title = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.title
+
+
 class Game(models.Model):
     title = models.CharField()
     description = models.TextField(blank=True)
@@ -18,14 +33,24 @@ class Game(models.Model):
     developer_name = models.CharField(max_length=100, blank=True, null=True)
     publisher_name = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.DateField(null=True, blank=True)
+    genres = models.ManyToManyField(Genre, blank=True, related_name='games')
     platforms = models.ManyToManyField(
         Platform,
         through='GamePlatform',
         related_name='games',
     )
     product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
+    subscriptions = models.ManyToManyField(Subscription, blank=True, related_name='games')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def is_in_gamepass(self):
+        return any("Game Pass" in sub.title for sub in self.subscriptions.all())
+
+    @property
+    def is_in_eaplay(self):
+        return any("EA Play" in sub.title for sub in self.subscriptions.all())
 
     def __str__(self):
         return self.title
@@ -51,6 +76,19 @@ class GameImage(models.Model):
 
     def __str__(self):
         return f"{self.game.title} - {self.get_image_type_display()}"
+
+
+class GameVideo(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='videos')
+    title = models.CharField(max_length=100)
+    url = models.URLField()
+    type = models.CharField(max_length=100)
+    height = models.PositiveIntegerField(null=True, blank=True)
+    width = models.PositiveIntegerField(null=True, blank=True)
+    preview_image_url = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.title} - {self.type}'
 
 
 class Region(models.Model):
