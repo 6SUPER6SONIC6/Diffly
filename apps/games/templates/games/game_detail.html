@@ -94,24 +94,40 @@
             <!-- Game details -->
             <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold mb-4">Game Details</h2>
-                <dl class="grid grid-cols-2 gap-y-2 text-sm ">
-                    <dt class="text-gray-400">Developer</dt>
-                    <dd class="font-medium">{{ game.developer_name|default:"—" }}</dd>
-                    <dt class="text-gray-400">Publisher</dt>
-                    <dd class="font-medium">{{ game.publisher_name|default:"—" }}</dd>
-                    <dt class="text-gray-400">Release Date</dt>
-                    <dd class="font-medium">
-                        {% if game.release_date %}
-                            {{ game.release_date|date:"F j, Y" }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </dd>
-                </dl>
+                <ul class="divide-y divide-dark-border/50">
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Developer</span>
+                        <span class="text-gray-100 font-medium">{{ game.developer_name|default:"—" }}</span>
+                    </li>
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Publisher</span>
+                        <span class="text-gray-100 font-medium">{{ game.publisher_name|default:"—" }}</span>
+                    </li>
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Release Date</span>
+                        <span class="text-gray-100 font-medium">
+                            {% if game.release_date %}
+                                {{ game.release_date|date:"F j, Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </span>
+                    </li>
+                    {% if game.genres.exists %}
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Genres</span>
+                        <div class="text-right text-gray-100 font-medium space-x-1">
+                            {% for genre in game.genres.all %}
+                            <span class="hover:text-accent transition-colors">{{ genre.title }}</span>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
             {% if game.subscriptions.exists %}
-<div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold mb-4">Included in these subscriptions</h2>
+            <div class="bg-dark-card p-6 border border-dark-border rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Included in these subscriptions</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {% for sub in game.subscriptions.all %}
