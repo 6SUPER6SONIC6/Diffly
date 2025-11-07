@@ -12,6 +12,14 @@ from apps.games.models import *
 REGION_MAP = {
     "en-US": "US",
     "tr-TR": "TR",
+    "ja-JP": "JP",
+    "pl-PL": "PL",
+    "en-GB": "UK",
+    "en-CA": "CA",
+    "fr-FR": "FR",
+    "es-ES": "ES",
+    "it-IT": "IT",
+    "en-IE": "IE",
 }
 
 SUBSCRIPTION_IDS = {
