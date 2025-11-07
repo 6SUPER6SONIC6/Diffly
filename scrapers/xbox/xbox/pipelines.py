@@ -16,10 +16,9 @@ REGION_MAP = {
     "pl-PL": "PL",
     "en-GB": "UK",
     "en-CA": "CA",
-    "fr-FR": "FR",
-    "es-ES": "ES",
-    "it-IT": "IT",
-    "en-IE": "IE",
+    "ko-KR": "KR",
+    "cs-CZ": "CZ",
+    "de-DE": "EU",
 }
 
 SUBSCRIPTION_IDS = {

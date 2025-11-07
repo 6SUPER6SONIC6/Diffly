@@ -11,7 +11,7 @@ class GameSpider(scrapy.Spider):
     """Scrapes games from Xbox Store across multiple regions, handling pagination via API."""
     name = "game"
     allowed_domains = ["www.xbox.com", "xboxservices.com"]
-    regions = ["en-US", "tr-TR", "ja-JP", "pl-PL", "en-GB", "en-CA", "fr-FR", "es-ES", "it-IT", "en-IE"]
+    regions = ["en-US", "tr-TR", "ja-JP", "pl-PL", "en-GB", "en-CA", "ko-KR", "cs-CZ", "de-DE",]
 
     def __init__(self, max_pages=3, *args, **kwargs):
         """
