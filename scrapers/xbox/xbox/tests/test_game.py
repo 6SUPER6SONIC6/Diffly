@@ -230,7 +230,7 @@ class GameSpiderTest(unittest.TestCase):
     def test_ms_cv_increments(self):
         """Test that MS-CV correlation vector counter increments correctly."""
 
-        initial_counter = self.spider.cv_counter
+        initial_counter = self.spider.cv_counters
 
         request_1 = self.spider.create_api_request('ct1', 'en-US')
         request_2 = self.spider.create_api_request('ct2', 'en-US')

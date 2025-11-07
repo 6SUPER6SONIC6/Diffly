@@ -1,5 +1,6 @@
 import json
 import re
+from uuid import uuid4
 
 import scrapy
 
@@ -10,7 +11,7 @@ class GameSpider(scrapy.Spider):
     """Scrapes games from Xbox Store across multiple regions, handling pagination via API."""
     name = "game"
     allowed_domains = ["www.xbox.com", "xboxservices.com"]
-    regions = ["en-US", "tr-TR"]
+    regions = ["en-US", "tr-TR", "ja-JP", "pl-PL", "en-GB", "en-CA", "fr-FR", "es-ES", "it-IT", "en-IE"]
 
     def __init__(self, max_pages=3, *args, **kwargs):
         """
@@ -26,8 +27,8 @@ class GameSpider(scrapy.Spider):
         self.pages_scraped = {region: 0 for region in self.regions}
 
         self.base_api_url = "https://emerald.xboxservices.com/xboxcomfd/browse?locale="
-        self.cv_base = "DSK6KO20k6Y7NXCBkdtipF"
-        self.cv_counter = 1
+        self.cv_bases = {region: str({uuid4().hex[:16]}) for region in self.regions}
+        self.cv_counters = {region: 1 for region in self.regions}
 
     async def start(self):
         """
@@ -104,8 +105,8 @@ class GameSpider(scrapy.Spider):
         :param region: The region code for the request.
         :return: scrapy.Request object.
         """
-        ms_cv = f"{self.cv_base}.{self.cv_counter}"
-        self.cv_counter += 1
+        ms_cv = f"{self.cv_bases[region]}.{self.cv_counters[region]}"
+        self.cv_counters[region] += 1
 
         body = {
             'Filters': 'eyJvcmRlcmJ5Ijp7ImlkIjoib3JkZXJieSIsImNob2ljZXMiOlt7ImlkIjoiVGl0bGUgQXNjIn1dfSwiUGxheVdpdGgiOnsiaWQiOiJQbGF5V2l0aCIsImNob2ljZXMiOlt7ImlkIjoiWGJveFNlcmllc1h8UyJ9LHsiaWQiOiJYYm94T25lIn1dfX0=',

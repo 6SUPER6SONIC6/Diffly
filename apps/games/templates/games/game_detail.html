@@ -173,9 +173,7 @@
                                 <span class="text-sm font-semibold text-gray-500">{{ price.region.name }}</span>
                             </div>
                             <div class="text-right">
-                                <span class="text-white font-bold">
-                                    {{ price.region.currency_symbol }}{{ price.current_price }}
-                                </span>
+                                    {{ price.region.currency_symbol }}<span class="text-white font-bold">{{ price.current_price }}</span>
                                 {% if price.is_on_sale %}
                                     <span class="line-through text-gray-500 text-sm ml-2">
                                         {{ price.region.currency_symbol }}{{ price.base_price }}
