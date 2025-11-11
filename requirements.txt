@@ -2,6 +2,7 @@ django==5.2.8
 scrapy==2.13.3
 celery==5.5.3
 django-celery-beat==2.8.1
+django-celery-results==2.6.0
 redis==7.0.1
 psycopg2-binary==2.9.11
 python-decouple==3.8
