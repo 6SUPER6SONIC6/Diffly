@@ -140,11 +140,11 @@
                     <img src="{% static 'images/logos/xbox.svg' %}" alt="Game Pass" class="w-8 h-8 mr-3">
                 {% elif "EA Play" in sub.title %}
                     <img src="{% static 'images/logos/ea.svg' %}" alt="EA Play" class="w-8 h-8 mr-3">
-                {% else %}
-                    <svg class="w-8 h-8 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M3 7h18M3 12h18M3 17h18"/>
-                    </svg>
+                {% elif "Ubisoft+" in sub.title %}" %}
+                    <img src="{% static 'images/logos/ubisoft.svg' %}" alt="Ubisoft+" class="w-8 h-8 mr-3">
+                {% elif "GTA+" in sub.title %}" %}
+                    <img src="{% static 'images/logos/rockstargames.svg' %}" alt="GTA+" class="w-8 h-8 mr-3">
+
                 {% endif %}
                 <span class="text-gray-300 font-medium">{{ sub.title }}</span>
             </div>

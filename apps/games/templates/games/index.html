@@ -97,6 +97,12 @@
                                 {% if game.is_in_gamepass %}
                                     <img src="{% static 'images/subscription_logos/gamepass.svg' %}" alt="Game Pass" title="Game Pass" class="h-5 rounded-sm shadow-md bg-black/50">
                                 {% endif %}
+                                {% if game.is_in_ubisoftplus %}
+                                    <img src="{% static 'images/subscription_logos/ubisoftplus.svg' %}" alt="Ubisoft+" title="Ubisoft+" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
+                                {% if game.is_in_gtaplus %}
+                                    <img src="{% static 'images/subscription_logos/gtaplus.svg' %}" alt="Gta+" title="Gta+" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
                             </div>
                         {% endif %}
         </div>
@@ -189,6 +195,12 @@
                                 {% endif %}
                                 {% if game.is_in_gamepass %}
                                     <img src="{% static 'images/subscription_logos/gamepass.svg' %}" alt="Game Pass" title="Game Pass" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
+                                {% if game.is_in_ubisoftplus %}
+                                    <img src="{% static 'images/subscription_logos/ubisoftplus.svg' %}" alt="Ubisoft+" title="Ubisoft+" class="h-5 rounded-sm shadow-md bg-black/50">
+                                {% endif %}
+                                {% if game.is_in_gtaplus %}
+                                    <img src="{% static 'images/subscription_logos/gtaplus.svg' %}" alt="Gta+" title="Gta+" class="h-5 rounded-sm shadow-md bg-black/50">
                                 {% endif %}
                             </div>
                         {% endif %}
