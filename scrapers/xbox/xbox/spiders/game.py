@@ -36,7 +36,7 @@ class GameSpider(scrapy.Spider):
         """
         for region in self.regions:
             yield scrapy.Request(
-                url=f"https://www.xbox.com/{region}/games/browse?orderby=Title+Asc&PlayWith=XboxSeriesX%7CS%2CXboxOne",
+                url=f"https://www.xbox.com/{region}/games/browse?orderby=Title+Asc",
                 callback=self.parse,
                 meta={"region": region},
             )
@@ -45,7 +45,7 @@ class GameSpider(scrapy.Spider):
         """
         Parse the initial HTML response, extract game data, and yields items or next page requests.
 
-        @url https://www.xbox.com/en-US/games/browse?orderby=Title+Asc&PlayWith=XboxSeriesX%7CS%2CXboxOne
+        @url https://www.xbox.com/en-US/games/browse?orderby=Title+Asc
         @returns items 25 25
         @scrapes game_title game_description game_developer_name game_publisher_name game_release_date product_id images region
         """
@@ -109,9 +109,9 @@ class GameSpider(scrapy.Spider):
         self.cv_counters[region] += 1
 
         body = {
-            'Filters': 'eyJvcmRlcmJ5Ijp7ImlkIjoib3JkZXJieSIsImNob2ljZXMiOlt7ImlkIjoiVGl0bGUgQXNjIn1dfSwiUGxheVdpdGgiOnsiaWQiOiJQbGF5V2l0aCIsImNob2ljZXMiOlt7ImlkIjoiWGJveFNlcmllc1h8UyJ9LHsiaWQiOiJYYm94T25lIn1dfX0=',
+            'Filters': 'eyJvcmRlcmJ5Ijp7ImlkIjoib3JkZXJieSIsImNob2ljZXMiOlt7ImlkIjoiVGl0bGUgQXNjIn1dfX0=',
             'ReturnFilters': False,
-            'ChannelKeyToBeUsedInResponse': 'BROWSE_CHANNELID=_FILTERS=ORDERBY=TITLE ASC&PLAYWITH=XBOXONE,XBOXSERIESX|S',
+            'ChannelKeyToBeUsedInResponse': 'BROWSE_CHANNELID=_FILTERS=ORDERBY=TITLE ASC',
             'EncodedCT': continuation_token,
             'ChannelId': ''
         }
