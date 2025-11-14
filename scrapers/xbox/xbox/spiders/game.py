@@ -36,7 +36,7 @@ class GameSpider(scrapy.Spider):
         """
         for region in self.regions:
             yield scrapy.Request(
-                url=f"https://www.xbox.com/{region}/games/browse?orderby=Title+Asc",
+                url=f"https://www.xbox.com/{region}/games/browse",
                 callback=self.parse,
                 meta={"region": region},
             )
@@ -109,9 +109,9 @@ class GameSpider(scrapy.Spider):
         self.cv_counters[region] += 1
 
         body = {
-            'Filters': 'eyJvcmRlcmJ5Ijp7ImlkIjoib3JkZXJieSIsImNob2ljZXMiOlt7ImlkIjoiVGl0bGUgQXNjIn1dfX0=',
+            'Filters': 'e30=',
             'ReturnFilters': False,
-            'ChannelKeyToBeUsedInResponse': 'BROWSE_CHANNELID=_FILTERS=ORDERBY=TITLE ASC',
+            'ChannelKeyToBeUsedInResponse': 'BROWSE_CHANNELID=_FILTERS=',
             'EncodedCT': continuation_token,
             'ChannelId': ''
         }
