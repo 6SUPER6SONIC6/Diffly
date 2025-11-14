@@ -5,6 +5,7 @@ from django.db import models
 
 
 class Platform(models.Model):
+    code = models.CharField(max_length=50, unique=True, null=True, blank=True)
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
@@ -34,13 +35,9 @@ class Game(models.Model):
     publisher_name = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.DateField(null=True, blank=True)
     genres = models.ManyToManyField(Genre, blank=True, related_name='games')
-    platforms = models.ManyToManyField(
-        Platform,
-        through='GamePlatform',
-        related_name='games',
-    )
-    product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
+    platforms = models.ManyToManyField(Platform, blank=True, related_name='games', )
     subscriptions = models.ManyToManyField(Subscription, blank=True, related_name='games')
+    product_id = models.CharField(max_length=12, unique=True, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -109,21 +106,9 @@ class Region(models.Model):
         return f"{self.name} ({self.currency_code})"
 
 
-class GamePlatform(models.Model):
-    platform = models.ForeignKey(Platform, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ('platform', 'game')
-
-    def __str__(self):
-        return f"{self.game.title} - {self.platform.name}"
-
-
 class Store(models.Model):
     name = models.CharField(max_length=100)
     base_url = models.URLField()
-    platforms = models.ManyToManyField(Platform, related_name='stores')
 
     def __str__(self):
         return self.name
@@ -131,7 +116,6 @@ class Store(models.Model):
 
 class Price(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='prices')
-    platform = models.ForeignKey(Platform, on_delete=models.CASCADE)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     base_price = models.DecimalField(decimal_places=2, max_digits=10)
@@ -154,7 +138,7 @@ class Price(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('game', 'platform', 'region', 'store')
+        unique_together = ('game', 'region', 'store')
 
     def __str__(self):
         currency = self.region.currency_symbol

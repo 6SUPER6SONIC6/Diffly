@@ -81,16 +81,12 @@ class DjangoModelPipeline:
             else:
                 self.stats[region]['games']['upd'] += 1
 
-        platform = await sync_to_async(Platform.objects.get)(name='Xbox')
-        await sync_to_async(GamePlatform.objects.get_or_create)(
-            platform=platform,
-            game=game,
-        )
-
         if region == 'en-US':
             images = item.get('images')
             videos = item.get('videos')
             genres = item.get('genres')
+            platforms = item.get('platforms')
+
             if images:
                 for image_type, image_data in images.items():
                     match image_type:
@@ -153,6 +149,18 @@ class DjangoModelPipeline:
 
                 await sync_to_async(game.genres.set)(genre_ids)
 
+            if platforms:
+                platform_ids = []
+                for platform_code in platforms:
+                    try:
+                        platform = await sync_to_async(Platform.objects.get)(code=platform_code)
+                    except Platform.DoesNotExist:
+                        spider.logger.error(f"Failed to get platform for {product_id}: {platform_code}")
+                    else:
+                        platform_ids.append(platform.id)
+
+                await sync_to_async(game.platforms.set)(platform_ids)
+
         if "price_base" in item and "region" in item:
             price_region = await sync_to_async(Region.objects.get)(code=region_code)
             store, created = await sync_to_async(Store.objects.get_or_create)(
@@ -161,14 +169,10 @@ class DjangoModelPipeline:
                     'base_url': f'https://www.xbox.com/{region}',
                 }
             )
-            if created:
-                await sync_to_async(store.platforms.add)(platform)
-                # store.platforms.add(platform)
 
             try:
                 price, created = await sync_to_async(Price.objects.update_or_create)(
                     game=game,
-                    platform=platform,
                     region=price_region,
                     store=store,
                     defaults={

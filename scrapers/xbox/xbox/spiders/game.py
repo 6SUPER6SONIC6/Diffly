@@ -175,6 +175,7 @@ class GameSpider(scrapy.Spider):
         item['images'] = game_data.get('images')
         item['videos'] = game_data.get('cmsVideos')
         item['genres'] = game_data.get('categories')
+        item['platforms'] = game_data.get('availableOn')
 
         prices = game_data.get('specificPrices', {}).get('purchaseable', [])
         if prices:
