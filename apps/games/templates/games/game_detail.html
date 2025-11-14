@@ -127,6 +127,16 @@
                         </div>
                     </li>
                     {% endif %}
+                    {% if game.platforms.exists %}
+                    <li class="flex justify-between py-3">
+                        <span class="text-gray-400 text-s">Platforms</span>
+                        <div class="text-right text-gray-100 font-medium space-x-1">
+                            {% for platform in game.platforms.all %}
+                            <span class="hover:text-accent transition-colors">{{ platform.name }}</span>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
             {% if game.subscriptions.exists %}
