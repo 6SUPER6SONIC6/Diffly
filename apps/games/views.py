@@ -23,7 +23,7 @@ def index(request):
                 image_type__in=['box_art', 'poster', 'hero_art']
             )
         )
-    ).order_by('-release_date')[:4]
+    ).order_by('-release_date')[:16]
 
     discounted_games = Game.objects.exclude(
         title__isnull=True
@@ -45,7 +45,7 @@ def index(request):
                 is_on_sale=True
             ).select_related('region')
         )
-    ).distinct().order_by('-prices__discount_percentage')[:4]
+    ).distinct().order_by('-prices__discount_percentage')[:16]
 
     total_games = Game.objects.exclude(title__isnull=True).exclude(title__exact="").count()
     total_regions = Region.objects.all().count()

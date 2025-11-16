@@ -71,68 +71,79 @@
             </a>
         </div>
 
-        <div class="game-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 card-grid">
+        <div class="relative">
+
+            <button onclick="scrollSection('latestReleasesScroll', 'left')"
+                    id="latestReleasesScrollLeftBtn"
+                    class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-dark-card hover:bg-accent transition-colors border border-dark-border rounded-full p-3 shadow-lg opacity-80"
+                    aria-label="Scroll left">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+        <div id="latestReleasesScroll" class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory py-4 -my-4">
             {% for game in latest_releases %}
-            <div class="game-card bg-dark-card border border-dark-border rounded-lg overflow-hidden
-            hover:border-accent transition-all group flex flex-col h-full">
-    <a href="{% url 'game_detail' game.pk %}" class="block flex flex-col h-full">
-        <div class="aspect-w-1 aspect-h-1 bg-gray-700 relative">
-            {% with game.images.all|best_image as img %}
-                {% if img %}
-                    <img src="{{ img }}" alt="{{ game.title }}" class="object-cover">
-                {% else %}
-                    <div class="absolute inset-0 flex items-center justify-center bg-gray-700">
+            <div class="game-card bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-accent transition-all group flex flex-col flex-shrink-0 w-64 snap-start">
+                <a href="{% url 'game_detail' game.pk %}" class="block flex flex-col h-full">
+                    <div class="aspect-w-1 aspect-h-1 bg-gray-700 relative">
+                        {% with game.images.all|best_image as img %}
+                        {% if img %}
+                        <img src="{{ img }}" alt="{{ game.title }}" class="object-cover">
+                        {% else %}
+                        <div class="absolute inset-0 flex items-center justify-center bg-gray-700">
                             <svg class="w-16 h-16 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                {% endif %}
-            {% endwith %}
-            {% if game.subscriptions.exists %}
-                            <div class="absolute bottom-2 right-2 flex space-x-2">
-                                {% if game.is_in_eaplay %}
-                                    <img src="{% static 'images/subscription_logos/eaplay.svg' %}" alt="EA Play" title="EA Play" class="h-5 rounded-sm shadow-md bg-black/50">
-                                {% endif %}
-                                {% if game.is_in_gamepass %}
-                                    <img src="{% static 'images/subscription_logos/gamepass.svg' %}" alt="Game Pass" title="Game Pass" class="h-5 rounded-sm shadow-md bg-black/50">
-                                {% endif %}
-                                {% if game.is_in_ubisoftplus %}
-                                    <img src="{% static 'images/subscription_logos/ubisoftplus.svg' %}" alt="Ubisoft+" title="Ubisoft+" class="h-5 rounded-sm shadow-md bg-black/50">
-                                {% endif %}
-                                {% if game.is_in_gtaplus %}
-                                    <img src="{% static 'images/subscription_logos/gtaplus.svg' %}" alt="Gta+" title="Gta+" class="h-5 rounded-sm shadow-md bg-black/50">
-                                {% endif %}
-                            </div>
                         {% endif %}
-        </div>
+                        {% endwith %}
 
-        <div class="p-4 flex flex-col h-full">
-            <div>
-                <h3 class="font-semibold text-white group-hover:text-accent transition-colors mb-2">
-                    {{ game.title }}
-                </h3>
-                <p class="text-sm text-gray-400 mb-3 line-clamp-3">
-                    {% if game.short_description %}
-                        {{ game.short_description|truncatewords:15 }}
-                    {% elif game.description %}
-                        {{ game.description|truncatewords:15 }}
-                    {% else %}
-                        No description available.
-                    {% endif %}
-                </p>
+                        {% if game.subscriptions.exists %}
+                        <div class="absolute bottom-2 right-2 flex space-x-2">
+                            {% if game.is_in_eaplay %}
+                                <img src="{% static 'images/subscription_logos/eaplay.svg' %}" alt="EA Play" title="EA Play" class="h-5 rounded-sm shadow-md bg-black/50">
+                            {% endif %}
+                            {% if game.is_in_gamepass %}
+                                <img src="{% static 'images/subscription_logos/gamepass.svg' %}" alt="Game Pass" title="Game Pass" class="h-5 rounded-sm shadow-md bg-black/50">
+                            {% endif %}
+                            {% if game.is_in_ubisoftplus %}
+                                <img src="{% static 'images/subscription_logos/ubisoftplus.svg' %}" alt="Ubisoft+" title="Ubisoft+" class="h-5 rounded-sm shadow-md bg-black/50">
+                            {% endif %}
+                            {% if game.is_in_gtaplus %}
+                                <img src="{% static 'images/subscription_logos/gtaplus.svg' %}" alt="Gta+" title="Gta+" class="h-5 rounded-sm shadow-md bg-black/50">
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-4 flex flex-col h-full">
+                        <div>
+                            <h3 class="font-semibold text-white group-hover:text-accent transition-colors mb-2">
+                                {{ game.title }}
+                            </h3>
+                            <p class="text-sm text-gray-400 mb-3 line-clamp-3">
+                                {% if game.short_description %}
+                                    {{ game.short_description|truncatewords:15 }}
+                                {% elif game.description %}
+                                    {{ game.description|truncatewords:15 }}
+                                {% else %}
+                                    No description available.
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        {% if game.release_date %}
+                            <p class="text-xs text-gray-500 mt-auto">
+                                Released: {{ game.release_date|date:"M d, Y" }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </a>
             </div>
-
-            {% if game.release_date %}
-                <p class="text-xs text-gray-500 mt-auto">
-                    Released: {{ game.release_date|date:"M d, Y" }}
-                </p>
-            {% endif %}
-        </div>
-    </a>
-</div>
             {% empty %}
-            <div class="col-span-full text-center py-12">
+            <div class="w-full text-center py-12">
                 <div class="flex flex-col items-center">
                     <svg class="w-16 h-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -143,6 +154,17 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
+
+            <button onclick="scrollSection('latestReleasesScroll', 'right')"
+                    id="latestReleasesScrollRightBtn"
+                    class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-dark-card hover:bg-accent transition-colors border border-dark-border rounded-full p-3 shadow-lg opacity-80"
+                    aria-label="Scroll right">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+
         </div>
     </div>
 </section>
@@ -161,9 +183,20 @@
             </a>
         </div>
 
-        <div class="game-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 card-grid">
+        <div class="relative">
+
+            <button onclick="scrollSection('discountsScroll', 'left')"
+                    id="discountsScrollLeftBtn"
+                    class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-dark-card hover:bg-accent transition-colors border border-dark-border rounded-full p-3 shadow-lg opacity-80"
+                    aria-label="Scroll left">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+        <div id="discountsScroll" class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory py-4 -my-4">
             {% for game in discounted_games %}
-            <div class="game-card bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-accent transition-all group flex flex-col h-full">
+            <div class="game-card bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-accent transition-all group flex flex-col flex-shrink-0 w-64 snap-start">
                 <a href="{% url 'game_detail' game.pk %}" class="block flex flex-col h-full">
                     <div class="aspect-w-1 aspect-h-1 bg-gray-700 relative">
                         {# Discount badge (use the first available price) #}
@@ -234,6 +267,17 @@
             </div>
             {% endfor %}
         </div>
+
+            <button onclick="scrollSection('discountsScroll', 'right')"
+                    id="discountsScrollRightBtn"
+                    class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-dark-card hover:bg-accent transition-colors border border-dark-border rounded-full p-3 shadow-lg opacity-80"
+                    aria-label="Scroll right">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+
+        </div>
     </div>
 </section>
 {% endblock %}
@@ -282,5 +326,69 @@
             images.forEach(img => imageObserver.observe(img));
         }
     });
+</script>
+
+<script>
+function scrollSection(containerId, direction) {
+    const container = document.getElementById(containerId);
+    const scrollAmount = 810;
+
+    if (direction === 'left') {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+}
+
+function updateArrowVisibility(containerId) {
+    const container = document.getElementById(containerId);
+    const leftBtn = document.getElementById(containerId + 'LeftBtn');
+    const rightBtn = document.getElementById(containerId + 'RightBtn');
+
+    if (!container || !leftBtn || !rightBtn) return;
+
+    // Hide left arrow if at start
+    if (container.scrollLeft <= 0) {
+        leftBtn.classList.add('opacity-0', 'pointer-events-none');
+    } else {
+        leftBtn.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    // Hide right arrow if at end
+    const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+    if (isAtEnd) {
+        rightBtn.classList.add('opacity-0', 'pointer-events-none');
+    } else {
+        rightBtn.classList.remove('opacity-0', 'pointer-events-none');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = ['latestReleasesScroll', 'discountsScroll'];
+
+    sections.forEach(sectionId => {
+        const container = document.getElementById(sectionId);
+        if (container) {
+            container.scrollLeft = 0;
+            container.addEventListener('scroll', () => updateArrowVisibility(sectionId));
+            setTimeout(() => {
+                container.scrollLeft = 0; // Force again after delay
+                updateArrowVisibility(sectionId);
+            }, 100);
+        }
+    });
+});
+
+window.addEventListener('load', function() {
+    const sections = ['latestReleasesScroll', 'discountsScroll'];
+
+    sections.forEach(sectionId => {
+        const container = document.getElementById(sectionId);
+        if (container) {
+            container.scrollLeft = 0;
+            updateArrowVisibility(sectionId);
+        }
+    });
+});
 </script>
 {% endblock %}
