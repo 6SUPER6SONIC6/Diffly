@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 from django.db import close_old_connections
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+from django.utils.text import slugify
 from scrapy.exceptions import DropItem
 
 from apps.games.models import *
@@ -66,6 +67,7 @@ class DjangoModelPipeline:
                 product_id=product_id,
                 defaults={
                     'title': item.get('game_title'),
+                    'slug': slugify(item.get('game_title')),
                     'description': item.get('game_description'),
                     'short_description': item.get('game_short_description'),
                     'developer_name': item.get('game_developer_name'),
@@ -178,6 +180,7 @@ class DjangoModelPipeline:
                     defaults={
                         'base_price': item.get('price_base'),
                         'current_price': item.get('price_current'),
+                        'store_url': f'https://www.xbox.com/{region}/games/store/{game.slug}/{game.product_id}' if game.slug else None,
                         'last_updated': timezone.now(),
                     }
                 )

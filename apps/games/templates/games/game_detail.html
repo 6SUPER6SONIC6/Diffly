@@ -177,7 +177,8 @@
                 </div>
                 <ul class="space-y-3">
                     {% for price in game.prices.all %}
-                        <li class="flex items-center justify-between bg-dark-bg p-4 rounded">
+                        {% if price.store_url %}<a href="{{ price.store_url }}" target="_blank" class="block group">{% endif %}
+                        <li class="relative flex items-center justify-between bg-dark-bg p-4 rounded border border-dark-border group-hover:border-accent transition-colors">
                             <div class="grid">
                                 <span class="text-xl font-bold">{{ price.region.code|upper }}</span>
                                 <span class="text-sm font-semibold text-gray-500">{{ price.region.name }}</span>
@@ -190,7 +191,13 @@
                                     </span>
                                 {% endif %}
                             </div>
+                            {% if price.store_url %}
+                            <svg class="absolute top-2 right-2 w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H9V2H2V16H16V9H18V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM6.7 12.7L5.3 11.3L14.6 2H11V0H18V7H16V3.4L6.7 12.7Z"/>
+                            </svg>
+                            {% endif %}
                         </li>
+                        {% if price.store_url %}</a>{% endif %}
                     {% empty %}
                         <p class="text-gray-400">No price information available.</p>
                     {% endfor %}
