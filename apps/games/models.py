@@ -119,6 +119,7 @@ class Price(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='prices')
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    store_url = models.URLField(blank=True, null=True)
     base_price = models.DecimalField(decimal_places=2, max_digits=10)
     current_price = models.DecimalField(decimal_places=2, max_digits=10)
     discount_percentage = models.DecimalField(
