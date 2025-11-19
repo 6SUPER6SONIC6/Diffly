@@ -85,7 +85,7 @@
         <div id="latestReleasesScroll" class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory py-4 -my-4">
             {% for game in latest_releases %}
             <div class="game-card bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-accent transition-all group flex flex-col flex-shrink-0 w-64 snap-start">
-                <a href="{% url 'game_detail' game.pk %}" class="block flex flex-col h-full">
+                <a href="{{ game.get_absolute_url }}" class="block flex flex-col h-full">
                     <div class="aspect-w-1 aspect-h-1 bg-gray-700 relative">
                         {% with game.images.all|best_image as img %}
                         {% if img %}
@@ -197,7 +197,7 @@
         <div id="discountsScroll" class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory py-4 -my-4">
             {% for game in discounted_games %}
             <div class="game-card bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-accent transition-all group flex flex-col flex-shrink-0 w-64 snap-start">
-                <a href="{% url 'game_detail' game.pk %}" class="block flex flex-col h-full">
+                <a href="{{ game.get_absolute_url }}" class="block flex flex-col h-full">
                     <div class="aspect-w-1 aspect-h-1 bg-gray-700 relative">
                         {# Discount badge (use the first available price) #}
                         {% with game.prices.first as price %}

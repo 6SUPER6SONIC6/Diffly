@@ -1,6 +1,6 @@
 from django.db.models import Prefetch, Q, F
 from django.db.models.functions import Lower, ExtractYear
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views import generic
 
@@ -156,7 +156,17 @@ class GameListView(generic.ListView):
 class GameDetailView(generic.DetailView):
     model = Game
     template_name = 'games/game_detail.html'
+    pk_url_kwarg = 'pk'
+    slug_url_kwarg = 'slug'
 
+    def get(self, request, *args, **kwargs):
+        self.object = get_object_or_404(Game, pk=self.kwargs['pk'])
+
+        if self.object.slug != self.kwargs['slug']:
+            return redirect(self.object.get_absolute_url(), permanent=True)
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
 class SearchView(generic.ListView):
     template_name = 'games/search.html'

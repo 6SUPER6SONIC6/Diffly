@@ -58,6 +58,10 @@ class Game(models.Model):
     def is_in_gtaplus(self):
         return any("GTA+" in sub.title for sub in self.subscriptions.all())
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('game_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
     def __str__(self):
         return self.title
 
