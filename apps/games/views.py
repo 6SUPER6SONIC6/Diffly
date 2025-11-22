@@ -1,5 +1,6 @@
-from django.db.models import Prefetch, Q, F
-from django.db.models.functions import Lower, ExtractYear
+from django.db.models import Prefetch, Q, F, Max, Case, When, Value
+from django.db.models.fields import DecimalField
+from django.db.models.functions import Lower, ExtractYear, Cast
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views import generic
@@ -30,8 +31,13 @@ def index(request):
     ).exclude(
         title__exact=""
     ).filter(
-        prices__is_on_sale=True,
-        prices__discount_percentage__gt=0
+        prices__current_price__lt=F('prices__base_price'),
+    ).annotate(
+        max_discount=Max(
+            Cast(
+                (F('prices__base_price') - F('prices__current_price')) / F('prices__base_price') * 100,
+                DecimalField(max_digits=10, decimal_places=2)
+            ))
     ).prefetch_related(
         Prefetch(
             'images',
@@ -42,10 +48,11 @@ def index(request):
         Prefetch(
             'prices',
             queryset=Price.objects.filter(
-                is_on_sale=True
+                current_price__lt=F('base_price')
             ).select_related('region')
-        )
-    ).distinct().order_by('-prices__discount_percentage')[:16]
+        ),
+        'subscriptions'
+    ).order_by('-max_discount').distinct()[:16]
 
     total_games = Game.objects.exclude(title__isnull=True).exclude(title__exact="").count()
     total_regions = Region.objects.all().count()
@@ -95,9 +102,14 @@ class GameListView(generic.ListView):
         genre_title = self.request.GET.get('genre')
 
         if discounted == 'true':
-            qs = qs.filter(prices__discount_percentage__gt=0, prices__is_on_sale=True)
+            qs = qs.filter(
+                prices__current_price__lt=F('prices__base_price'),
+            ).distinct()
         elif discounted == 'false':
-            qs = qs.filter(Q(prices__is_on_sale=False) | Q(prices__isnull=True))
+            qs = qs.filter(
+                Q(prices__current_price__gte=F('prices__base_price')) |
+                Q(prices__isnull=True)
+            ).distinct()
 
         if release_year:
             qs = qs.filter(release_date__year=release_year)
@@ -116,7 +128,21 @@ class GameListView(generic.ListView):
         elif ordering == '-title':
             qs = qs.order_by(Lower('title')).reverse()
         elif ordering == 'discount':
-            qs = qs.order_by('-prices__discount_percentage')
+            qs = qs.annotate(
+                max_discount=Max(
+                    Case(
+                        When(
+                            Q(prices__base_price__gt=0) & Q(prices__current_price__lt=F('prices__base_price')),
+                            then=Cast(
+                                (F('prices__base_price') - F('prices__current_price')) / F('prices__base_price') * 100,
+                                DecimalField(max_digits=10, decimal_places=2)
+                            )
+                        ),
+                        default=Value(0),
+                        output_field=DecimalField(max_digits=10, decimal_places=2)
+                    )
+                )
+            ).order_by('-max_discount', 'title')
         elif ordering == 'release_date':
             qs = qs.order_by(F('release_date').asc(nulls_last=True))
         elif ordering == '-release_date' or not ordering:
@@ -167,6 +193,7 @@ class GameDetailView(generic.DetailView):
 
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
+
 
 class SearchView(generic.ListView):
     template_name = 'games/search.html'
