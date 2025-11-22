@@ -1,6 +1,5 @@
 from decimal import Decimal
 
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -125,22 +124,24 @@ class Price(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     base_price = models.DecimalField(decimal_places=2, max_digits=10)
     current_price = models.DecimalField(decimal_places=2, max_digits=10)
-    discount_percentage = models.DecimalField(
-        decimal_places=2,
-        max_digits=5,
-        default=0,
-        validators=[
-            MinValueValidator(Decimal('0')),
-            MaxValueValidator(Decimal('100'))
-        ]
-    )
 
-    is_on_sale = models.BooleanField(default=False)
     sale_start_date = models.DateField(null=True, blank=True)
     sale_end_date = models.DateField(null=True, blank=True)
 
     last_updated = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def is_on_sale(self):
+        return self.current_price < self.base_price
+
+    @property
+    def discount_percentage(self):
+        if self.is_on_sale:
+            return round(
+                    ((self.base_price - self.current_price) / self.base_price) * Decimal('100')
+                )
+        return Decimal('0')
 
     @property
     def store_url(self):
@@ -155,15 +156,3 @@ class Price(models.Model):
             return f"{self.game.title} - {currency}{self.current_price} ({currency}{self.base_price})"
         else:
             return f"{self.game.title} - {currency}{self.base_price}"
-
-    def save(self, *args, **kwargs):
-        if self.current_price < self.base_price:
-            self.is_on_sale = True
-            self.discount_percentage = round(
-                (self.base_price - self.current_price) / self.base_price * 100
-            )
-        else:
-            self.is_on_sale = False
-            self.discount_percentage = 0
-
-        super().save(*args, **kwargs)

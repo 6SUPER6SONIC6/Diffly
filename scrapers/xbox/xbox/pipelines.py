@@ -180,7 +180,6 @@ class DjangoModelPipeline:
                     defaults={
                         'base_price': item.get('price_base'),
                         'current_price': item.get('price_current'),
-                        'store_url': f'https://www.xbox.com/{region}/games/store/{game.slug}/{game.product_id}' if game.slug else None,
                         'last_updated': timezone.now(),
                     }
                 )
