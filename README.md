@@ -11,8 +11,6 @@ The project is live and available here - **[diffly.space](https://diffly.space)*
 [![Django](https://img.shields.io/badge/Django-5.2-%23092E20?logo=django)](https://www.djangoproject.com/)
 [![Scrapy](https://img.shields.io/badge/Scrapy-2.13-%2360A839?logo=scrapy)](https://www.scrapy.org/)
 [![Celery](https://img.shields.io/badge/Celery-5.5-%2337814A?logo=celery)](https://docs.celeryq.dev/)
-[![Redis](https://img.shields.io/badge/Redis-7.0-%23FF4438?logo=redis)](https://redis.io)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-7.0-%234169E1?logo=postgresql)](https://www.postgresql.org)
 
 ## Features
 
