@@ -20,7 +20,7 @@ The project is live and available here - **[diffly.space](https://diffly.space)*
 - **Automated Updates** - Periodic scraping keeps prices and game data fresh
 - **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Django**
